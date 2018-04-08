@@ -16,7 +16,11 @@ namespace Strategia
         {
             CelestialBody home = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).Single();
 
-            if (id == "MoonProgram")
+			if (id == "KerbinProgram")
+            {
+                yield return home;
+            }
+            else if (id == "MoonProgram")
             {
                 foreach (CelestialBody child in home.orbitingBodies)
                 {
