@@ -11,6 +11,7 @@ using KSP.UI.Screens;
 using Strategies;
 using ContractConfigurator;
 using ContractConfigurator.Util;
+using CustomBarnKit;
 
 namespace Strategia
 {
@@ -52,6 +53,7 @@ namespace Strategia
                     rect.sizeDelta = new Vector2(size, rect.sizeDelta.y);
                 }
 
+                /*
                 // Clean up the strategy max text
                 LoggingUtil.LogDebug(this, "Cleaning up strategy max text...");
                 Transform stratCountTransform = KSP.UI.Screens.Administration.Instance.transform.FindDeepChild("ActiveStratCount");
@@ -60,7 +62,7 @@ namespace Strategia
                 if (!stratCountText.text.Contains("Max: " + limit))
                 {
                     stratCountText.text = "Active Strategies: " + Administration.Instance.ActiveStrategyCount + " [Max: " + limit + "]";
-                }
+                }*/
 
                 // Replace department avatars with images when necessary
                 LoggingUtil.LogDebug(this, "Performing department image replacement...");

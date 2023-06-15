@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Strategia</RootNamespace>
     <AssemblyName>Strategia</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -41,7 +43,10 @@
     </Reference>
     <Reference Include="ContractConfigurator, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\GameData\ContractConfigurator\ContractConfigurator.dll</HintPath>
+      <HintPath>E:\Games\Kerbal Space Program RP1\GameData\ContractConfigurator\ContractConfigurator.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomBarnKit">
+      <HintPath>E:\Games\Kerbal Space Program RP1\GameData\CustomBarnKit\CustomBarnKit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -122,8 +127,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "$(SolutionDir)..\GameData\Strategia\"
-copy /Y "$(TargetPath)" "$(SolutionDir)..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\GameData\Strategia\"
+    <PostBuildEvent>copy /Y "$(TargetPath)" "E:\Games\Kerbal Space Program RP1\GameData\Strategia"
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

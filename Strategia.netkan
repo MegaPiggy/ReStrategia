@@ -1,12 +1,12 @@
 {
     "spec_version": "v1.16",
-    "identifier": "Strategia",
-    "$kref": "#/ckan/github/jrossignol/Strategia",
-    "name": "Strategia",
-    "abstract": "A complete rewrite of KSP's strategy system.",
+    "identifier": "StrategiaContinued",
+    "$kref": "#/ckan/github/Leosky/Strategia",
+    "name": "Strategia Continued",
+    "abstract": "Debugged version of Strategia from jrossignol. A complete rewrite of KSP's strategy system.",
     "license": "MIT",
     "release_status": "stable",
-    "author": "nightingale",
+    "author": "nightingale, Leosky",
     "$vref": "#/ckan/ksp-avc",
     "depends": [
         { "name": "CustomBarnKit" },
@@ -21,8 +21,8 @@
     ],
     "resources": {
         "homepage": "http://forum.kerbalspaceprogram.com/index.php?/topic/131808-12x-strategia-v140-2016-11-21/",
-        "bugtracker": "https://github.com/jrossignol/Strategia/issues",
-        "license": "https://raw.githubusercontent.com/jrossignol/Strategia/master/LICENSE.txt"
+        "bugtracker": "https://github.com/Leosky/Strategia/issues",
+        "license": "https://raw.githubusercontent.com/Leosky/Strategia/master/LICENSE.txt"
     }
 }
 
