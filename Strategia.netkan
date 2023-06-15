@@ -20,9 +20,13 @@
         }
     ],
     "resources": {
-        "homepage": "http://forum.kerbalspaceprogram.com/index.php?/topic/131808-12x-strategia-v140-2016-11-21/",
+        "homepage": "https://github.com/Leosky/StrategiaContinued/",
         "bugtracker": "https://github.com/Leosky/StrategiaContinued/issues",
         "license": "https://raw.githubusercontent.com/Leosky/StrategiaContinued/master/LICENSE.txt"
-    }
+    },
+    "conflicts": [
+        { "name" : "Strategia" }
+    ]
+
 }
 
