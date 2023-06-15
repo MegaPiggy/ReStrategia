@@ -1,7 +1,7 @@
 {
     "spec_version": "v1.16",
     "identifier": "StrategiaContinued",
-    "$kref": "#/ckan/github/Leosky/Strategia",
+    "$kref": "#/ckan/github/Leosky/StrategiaContinued",
     "name": "Strategia Continued",
     "abstract": "Debugged version of Strategia from jrossignol. A complete rewrite of KSP's strategy system.",
     "license": "MIT",
@@ -21,8 +21,8 @@
     ],
     "resources": {
         "homepage": "http://forum.kerbalspaceprogram.com/index.php?/topic/131808-12x-strategia-v140-2016-11-21/",
-        "bugtracker": "https://github.com/Leosky/Strategia/issues",
-        "license": "https://raw.githubusercontent.com/Leosky/Strategia/master/LICENSE.txt"
+        "bugtracker": "https://github.com/Leosky/StrategiaContinued/issues",
+        "license": "https://raw.githubusercontent.com/Leosky/StrategiaContinued/master/LICENSE.txt"
     }
 }
 
