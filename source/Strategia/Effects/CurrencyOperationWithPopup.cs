@@ -31,6 +31,7 @@ namespace Strategia
 
         protected override void OnRegister()
         {
+            base.OnRegister();
             if (Parent.IsActive)
             {
                 GameEvents.Modifiers.OnCurrencyModified.Add(new EventData<CurrencyModifierQuery>.OnEvent(OnCurrencyModified));
@@ -39,6 +40,7 @@ namespace Strategia
 
         protected override void OnUnregister()
         {
+            base.OnUnregister();
             GameEvents.Modifiers.OnCurrencyModified.Remove(new EventData<CurrencyModifierQuery>.OnEvent(OnCurrencyModified));
         }
 

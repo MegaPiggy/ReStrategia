@@ -44,7 +44,7 @@ namespace Strategia
                     {
                         if (body.Radius > BARYCENTER_THRESHOLD)
                         {
-                            if (body.pqsController != null)
+                            if (body.pqsController != null && body.hasSolidSurface)
                             {
                                 yield return body;
                             }
@@ -56,7 +56,7 @@ namespace Strategia
             {
                 foreach (CelestialBody body in FlightGlobals.Bodies[0].orbitingBodies)
                 {
-                    if (body.pqsController == null && !body.orbitingBodies.Contains(home) && body.orbitingBodies.Count() >= 2 && body.Radius > BARYCENTER_THRESHOLD)
+                    if ((body.pqsController == null || !body.hasSolidSurface) && !body.orbitingBodies.Contains(home) && body.orbitingBodies.Count() >= 2 && body.Radius > BARYCENTER_THRESHOLD)
                     {
                         yield return body;
                     }
@@ -68,14 +68,14 @@ namespace Strategia
                 {
                     if (body != home)
                     {
-                        if (body.pqsController != null)
+                        if (body.pqsController != null && body.hasSolidSurface)
                         {
                             yield return body;
                         }
 
                         foreach (CelestialBody childBody in body.orbitingBodies)
                         {
-                            if (childBody.pqsController != null)
+                            if (childBody.pqsController != null && body.hasSolidSurface)
                             {
                                 yield return childBody;
                             }

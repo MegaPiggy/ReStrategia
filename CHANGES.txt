@@ -1,3 +1,30 @@
+Strategia 1.10.0
+- Support replacing headImage (static images) for admin department.
+- Better dynamic resizing based on count of departments.
+- Removed some old Reflection that is no longer needed.
+- Fixed an NRE when no avatar is specified in a department config.
+
+Strategia 1.9.0
+- Rebuild for KSP 1.10.0
+- Fix from TonkaCrash for issue where strategies for improving vessel values applied the improved value to different parts of the same type.
+- Fixed a minor issue where the Strategy notifier could report incorrect information.
+
+Strategia 1.8.0
+- Rebuild for KSP 1.8.0
+- Minor typo correction (thanks Galenmacil).
+
+Strategia 1.7.4
+- Check hasSolidSurface flag for gas giants (thanks LucasHazelwood).
+- Added title to Strategia agent to prevent warnings in log (thanks denyasis).
+
+Strategia 1.7.3
+- Rebuild for KSP 1.5.x.
+- Fixed active strategy text in facility right-click menu (thanks avalancha).
+
+Strategia 1.7.2
+- Fixed logic for determining strategy level - this was causing some strategies to be the same for all levels (thanks ibanix).
+- Fixed Astronaut Training Strategies not actually costing extra (thanks Jukelo).
+
 Strategia 1.7.1
 - Fixed some issues with the kerbal portraits not refreshing properly when the level is dynamically changed (thanks zwinst).
 - Fixed error handling when tech tree can't be loaded (thanks zwinst).

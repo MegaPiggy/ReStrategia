@@ -65,6 +65,7 @@ namespace Strategia
                     if (bodyInfoDict.ContainsKey(body) && !body.isHomeWorld)
                     {
                         RBWrapper.CelestialBodyInfo bodyInfo = bodyInfoDict[body];
+                        LoggingUtil.LogVerbose(this, "    check body {0} = {1}", body, bodyInfo.isResearched);
                         if (!bodyInfo.isResearched)
                         {
                             return false;

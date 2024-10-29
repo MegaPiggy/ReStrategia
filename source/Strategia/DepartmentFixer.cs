@@ -35,37 +35,35 @@ namespace Strategia
                 return false;
             }
 
-            // Go and find the config class
-            FieldInfo configField = typeof(StrategySystem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic).
-                Where(fi => fi.FieldType == typeof(StrategySystemConfig)).First();
-            StrategySystemConfig config = (StrategySystemConfig)configField.GetValue(StrategySystem.Instance);
-
             // Find the departments
             DepartmentConfig gene = null;
             DepartmentConfig wernher = null;
-            foreach (DepartmentConfig department in config.Departments)
+            foreach (DepartmentConfig department in StrategySystem.Instance.SystemConfig.Departments)
             {
                 // Save Gene and Wernher so we can do a reorg
-                if (department.AvatarPrefab.name == "Instructor_Gene")
+                if (department.AvatarPrefab != null)
                 {
-                    gene = department;
-                }
-                else if (department.AvatarPrefab.name == "Instructor_Wernher")
-                {
-                    wernher = department;
+                    if (department.AvatarPrefab.name == "Instructor_Gene")
+                    {
+                        gene = department;
+                    }
+                    else if (department.AvatarPrefab.name == "Instructor_Wernher")
+                    {
+                        wernher = department;
+                    }
                 }
             }
 
             // Re-order stuff
             if (wernher != null)
             {
-                config.Departments.Remove(wernher);
-                config.Departments.Insert(0, wernher);
+                StrategySystem.Instance.SystemConfig.Departments.Remove(wernher);
+                StrategySystem.Instance.SystemConfig.Departments.Insert(0, wernher);
             }
             if (gene != null)
             {
-                config.Departments.Remove(gene);
-                config.Departments.Insert(0, gene);
+                StrategySystem.Instance.SystemConfig.Departments.Remove(gene);
+                StrategySystem.Instance.SystemConfig.Departments.Insert(0, gene);
             }
 
             return true;

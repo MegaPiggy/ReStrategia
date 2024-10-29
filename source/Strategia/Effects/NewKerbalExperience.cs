@@ -110,12 +110,10 @@ namespace Strategia
                 AstronautComplex ac = UnityEngine.Object.FindObjectOfType<AstronautComplex>();
                 if (ac != null)
                 {
-                    Debug.Log("NewKerbalExperience: CreateAvailableList");
                     MethodInfo updateListMethod = typeof(AstronautComplex).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).
                         Where(mi => mi.Name == "CreateAvailableList").First();
                     updateListMethod.Invoke(ac, new object[] { });
 
-                    Debug.Log("NewKerbalExperience: AddItem_Available");
                     MethodInfo addToListMethod = typeof(AstronautComplex).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).
                         Where(mi => mi.Name == "AddItem_Available").First();
                     addToListMethod.Invoke(ac, new object[] { pcm });

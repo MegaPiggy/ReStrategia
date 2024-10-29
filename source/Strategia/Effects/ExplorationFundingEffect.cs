@@ -46,7 +46,7 @@ namespace Strategia
 
         protected override string GetDescription()
         {
-            return (rewardFunds > 0.0 ? "+" : "") + rewardFunds.ToString("N0") + " funds when science trasmitted/recovered from new " +
+            return (rewardFunds > 0.0 ? "+" : "") + rewardFunds.ToString("N0") + " funds when science transmitted/recovered from new " +
                 ExplorationTypeNamePlural(explorationType) + ".";
         }
 

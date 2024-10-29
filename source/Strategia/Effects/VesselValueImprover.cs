@@ -186,24 +186,24 @@ namespace Strategia
                             ModuleParachute parachute = m as ModuleParachute;
                             if (parachute != null)
                             {
-                                SetValue(p.partName, needsIncrease, ref parachute.fullyDeployedDrag);
+                                SetValue(p.persistentId.ToString(), needsIncrease, ref parachute.fullyDeployedDrag);
                             }
                             break;
                         case Attribute.StrutStrength:
                             CModuleStrut strut = m as CModuleStrut;
                             if (strut != null)
                             {
-                                SetValue(p.partName + "_linear", needsIncrease, ref strut.linearStrength);
-                                SetValue(p.partName + "_angular", needsIncrease, ref strut.angularStrength);
+                                SetValue(p.persistentId.ToString() + "_linear", needsIncrease, ref strut.linearStrength);
+                                SetValue(p.persistentId.ToString() + "_angular", needsIncrease, ref strut.angularStrength);
                             }
                             break;
                         case Attribute.ReactionWheelTorque:
                             ModuleReactionWheel reactionWheel = m as ModuleReactionWheel;
                             if (reactionWheel != null)
                             {
-                                SetValue(p.partName + "_pitch", needsIncrease, ref reactionWheel.PitchTorque);
-                                SetValue(p.partName + "_yaw", needsIncrease, ref reactionWheel.YawTorque);
-                                SetValue(p.partName + "_roll", needsIncrease, ref reactionWheel.RollTorque);
+                                SetValue(p.persistentId.ToString() + "_pitch", needsIncrease, ref reactionWheel.PitchTorque);
+                                SetValue(p.persistentId.ToString() + "_yaw", needsIncrease, ref reactionWheel.YawTorque);
+                                SetValue(p.persistentId.ToString() + "_roll", needsIncrease, ref reactionWheel.RollTorque);
                             }
                             break;
                     }
@@ -222,6 +222,7 @@ namespace Strategia
                 originalValues[name] = value;
             }
             value = originalValues[name] * (increaseRequired ? multiplier : 1.0f);
+            Debug.Log("Strategia.VesselValueImprover.SetValue]: " + name + ":" + originalValues[name].ToString() + " x " + (increaseRequired ? multiplier : 1.0f).ToString() + " = " + value.ToString() );
         }
     }
 }

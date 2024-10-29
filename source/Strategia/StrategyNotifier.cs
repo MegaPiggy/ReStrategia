@@ -7,6 +7,7 @@ using UnityEngine;
 using KSP;
 using KSP.UI.Screens;
 using Strategies;
+using ContractConfigurator;
 
 namespace Strategia
 {
@@ -23,7 +24,6 @@ namespace Strategia
         void Start()
         {
             StartCoroutine(CheckStrategyState());
-
             GameEvents.onFacilityContextMenuSpawn.Add(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
         }
 
@@ -176,7 +176,7 @@ namespace Strategia
             {
                 string strategy = pair.Key;
                 bool active = pair.Value;
-                strategyNode.AddValue(strategy, active);
+                msgNode.AddValue(strategy, active);
             }
         }
 
@@ -207,7 +207,7 @@ namespace Strategia
         void OnFacilityContextMenuSpawn(KSCFacilityContextMenu menu)
         {
             string name = (string)facilityName.GetValue(menu);
-            if (name == "Administration Building")
+            if (name == "#autoLOC_6001644") // Admin Building
             {
                 StartCoroutine(FixStrategyText(menu));
             }
@@ -218,8 +218,8 @@ namespace Strategia
             int currentLevel = (int)Math.Round(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.Administration) *
                 ScenarioUpgradeableFacilities.GetFacilityLevelCount(SpaceCenterFacility.Administration)) + 1;
 
-            string currentLevelText = StringBuilderCache.Format("* Max Active Strategies:  {0}", currentLevel);
-            string nextLevelText = StringBuilderCache.Format("<color=#a8ff04>* Max Active Strategies:  {0}</color>", currentLevel+1);
+            string currentLevelText = StringBuilderCache.Format("* Max Active Strategies: {0}", currentLevel);
+            string nextLevelText = StringBuilderCache.Format("<color=#a8ff04>* Max Active Strategies: {0}</color>", currentLevel+1);
 
             while (true)
             {
