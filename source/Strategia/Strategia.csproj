@@ -81,6 +81,12 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SolutionDir)..\assets\**\*.*">
+      <Link>icons\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+    <None Include="$(SolutionDir)..\GameData\Strategia\**\*.*" Exclude="$(SolutionDir)..\GameData\Strategia\Strategia.dll;$(SolutionDir)..\GameData\Strategia\Strategia.pdb" />
+  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /E /H /Y &quot;$(OutputPath)&quot; &quot;$(KSP)\GameData\Strategia\&quot;" />
   </Target>
