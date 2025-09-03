@@ -22,7 +22,7 @@ namespace Strategia
         /// </summary>
         static MediaStar()
         {
-            Debug.Log("Strategia: Setting up Media Star Experience");
+            Debug.Log("[Strategia] Setting up Media Star Experience");
 
             KerbalRoster.AddExperienceType(MEDIA_STAR_XP, "Media star from", 3.5f);
         }

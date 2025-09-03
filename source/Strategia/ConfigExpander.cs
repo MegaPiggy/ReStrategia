@@ -19,7 +19,7 @@ namespace Strategia
 
         public void Awake()
         {
-            Debug.Log("Strategia: Expanding configuration");
+            Debug.Log("[Strategia] Expanding configuration");
             DoDependencyCheck();
             DoLoad();
             DontDestroyOnLoad(this);
@@ -56,7 +56,7 @@ namespace Strategia
             foreach (UrlDir.UrlConfig config in GameDatabase.Instance.GetConfigs("STRATEGY_BODY_EXPAND"))
             {
                 ConfigNode node = config.config;
-                Debug.Log("Strategia: Expanding " + node.GetValue("id"));
+                Debug.Log("[Strategia] Expanding " + node.GetValue("id"));
                 foreach (CelestialBody body in CelestialBodyUtil.GetBodiesForStrategy(node.GetValue("id")))
                 {
                     // Duplicate the node
@@ -79,7 +79,7 @@ namespace Strategia
                     }
 
                     // Add the cloned strategy to the config file
-                    Debug.Log("Strategia: Generated strategy '" + newStrategy.GetValue("title") + "'");
+                    Debug.Log("[Strategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
                     config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
 
                     yield return null;
@@ -90,7 +90,7 @@ namespace Strategia
             foreach (UrlDir.UrlConfig config in GameDatabase.Instance.GetConfigs("STRATEGY_LEVEL_EXPAND"))
             {
                 ConfigNode node = config.config;
-                Debug.Log("Strategia: Expanding " + node.GetValue("name"));
+                Debug.Log("[Strategia] Expanding " + node.GetValue("name"));
 
                 int count = ConfigNodeUtil.ParseValue<int>(node, "factorSliderSteps");
                 for (int level = 1; level <= count; level++)
@@ -133,7 +133,7 @@ namespace Strategia
                     }
 
                     // Add the cloned strategy to the config file
-                    Debug.Log("Strategia: Generated strategy '" + newStrategy.GetValue("title") + "'");
+                    Debug.Log("[Strategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
                     config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
 
                     yield return null;

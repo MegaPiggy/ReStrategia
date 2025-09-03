@@ -65,7 +65,7 @@ namespace Strategia
 
                 if (techTreeRoot == null || techTree == null)
                 {
-                    Debug.LogError("Strategia: Couldn't load tech tree from " + HighLogic.CurrentGame.Parameters.Career.TechTreeUrl);
+                    Debug.LogError("[Strategia] Couldn't load tech tree from " + HighLogic.CurrentGame.Parameters.Career.TechTreeUrl);
                     return false;
                 }
 

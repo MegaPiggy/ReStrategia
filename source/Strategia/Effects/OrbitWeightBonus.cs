@@ -97,7 +97,7 @@ namespace Strategia
 
         private void HandleVessel(Vessel vessel)
         {
-            Debug.Log("Strategia: OrbitWeightBonus.HandleVessel");
+            Debug.Log("[Strategia] OrbitWeightBonus.HandleVessel");
 
             // Check weight limit
             if (vessel.totalMass < mass)

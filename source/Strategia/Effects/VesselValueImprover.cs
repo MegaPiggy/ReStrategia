@@ -131,7 +131,7 @@ namespace Strategia
                 return;
             }
 
-            Debug.Log("Strategia: VesselValueImprover.HandleVessel");
+            Debug.Log("[Strategia] VesselValueImprover.HandleVessel");
 
             // Check for our trait
             bool needsIncrease = false;

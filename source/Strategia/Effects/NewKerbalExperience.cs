@@ -24,7 +24,7 @@ namespace Strategia
         /// </summary>
         static NewKerbalExperience()
         {
-            Debug.Log("Strategia: Setting up Kerbal Experience");
+            Debug.Log("[Strategia] Setting up Kerbal Experience");
             KerbalRoster.AddExperienceType(SPECIAL_XP + "1", "Special training", 0.0f, 2.0f);
             KerbalRoster.AddExperienceType(SPECIAL_XP + "2", "Special training", 0.0f, 8.0f);
             KerbalRoster.AddExperienceType(SPECIAL_XP + "3", "Special training", 0.0f, 16.0f);
@@ -87,7 +87,7 @@ namespace Strategia
 
                 CelestialBody homeworld = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault();
 
-                Debug.Log("Strategia: Awarding experience to " + pcm.name);
+                Debug.Log("[Strategia] Awarding experience to " + pcm.name);
 
                 // Find existing entries
                 int currentValue = 2;
