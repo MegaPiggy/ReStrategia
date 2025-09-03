@@ -1,52 +1,39 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C2C97615-1B94-4A31-9A68-042F6457403E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Strategia</RootNamespace>
-    <AssemblyName>Strategia</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Copyright>Copyright ©  2015</Copyright>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <NoWarn>MSB3270</NoWarn>
+    <DebugType>portable</DebugType>
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <KSP>S:\SteamLibrary\steamapps\common\Kerbal Space Program\</KSP>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="ContractConfigurator, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\Games\Kerbal Space Program RP1\GameData\ContractConfigurator\ContractConfigurator.dll</HintPath>
+      <HintPath>$(KSP)\GameData\ContractConfigurator\ContractConfigurator.dll</HintPath>
     </Reference>
     <Reference Include="CustomBarnKit">
-      <HintPath>E:\Games\Kerbal Space Program RP1\GameData\CustomBarnKit\CustomBarnKit.dll</HintPath>
+      <HintPath>$(KSP)\GameData\CustomBarnKit\CustomBarnKit.dll</HintPath>
+    </Reference>
+    <Reference Include="KEX-Wormholes">
+      <HintPath>$(KSP)\GameData\KopernicusExpansion\Plugins\KEX-Wormholes.dll</HintPath>
+    </Reference>
+    <Reference Include="Kopernicus">
+      <HintPath>$(KSP)\GameData\Kopernicus\Plugins\Kopernicus.dll</HintPath>
+    </Reference>
+    <Reference Include="Singularity">
+      <HintPath>$(KSP)\GameData\Singularity\Singularity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,86 +42,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AdminResizer.cs" />
-    <Compile Include="DepartmentFixer.cs" />
-    <Compile Include="EffectModifier\IOnDeactivateEffect.cs" />
-    <Compile Include="EffectModifier\IMultipleEffects.cs" />
-    <Compile Include="Effects\ContractWeightBooster.cs" />
-    <Compile Include="Effects\CurrencyOperationCrewedLaunch.cs" />
-    <Compile Include="Effects\CurrencyOperationFacilityUpgrade.cs" />
-    <Compile Include="Effects\CurrencyOperationKerbalRecovery.cs" />
-    <Compile Include="Effects\CurrencyOperationWithPopup.cs" />
-    <Compile Include="Effects\CurrencyOperationTextOverride.cs" />
-    <Compile Include="Effects\CurrencyOperationFacilityDestruction.cs" />
-    <Compile Include="Effects\CurrencyOperationUnmanned.cs" />
-    <Compile Include="Effects\ExplorationFundingEffect.cs" />
-    <Compile Include="Effects\AdvanceEffect.cs" />
-    <Compile Include="Effects\CareerParameterOverride.cs" />
-    <Compile Include="Effects\ContractEffect.cs" />
-    <Compile Include="Effects\CurrencyOperationByTrait.cs" />
-    <Compile Include="Effects\ReputationTicker.cs" />
-    <Compile Include="Effects\ScienceBooster.cs" />
-    <Compile Include="Effects\OrbitWeightBonus.cs" />
-    <Compile Include="Effects\MediaStar.cs" />
-    <Compile Include="Effects\VesselValueImprover.cs" />
-    <Compile Include="Effects\CurrencyOperationByContract.cs" />
-    <Compile Include="Effects\LevelBooster.cs" />
-    <Compile Include="Requirements\ResearchBodiesRequirement.cs" />
-    <Compile Include="Requirements\IncompatibleGroupRequirement.cs" />
-    <Compile Include="Requirements\IncompatibleRequirement.cs" />
-    <Compile Include="Requirements\VesselEnrouteRequirement.cs" />
-    <Compile Include="Effects\CurrencyOperationPerTech.cs" />
-    <Compile Include="Effects\CurrencyOperationRandomized.cs" />
-    <Compile Include="Effects\CurrencyOperationNonZero.cs" />
-    <Compile Include="ContractExpressionParser.cs" />
-    <Compile Include="CurrencyPopup.cs" />
-    <Compile Include="StrategyNotifier.cs" />
-    <Compile Include="EffectModifier\IObjectiveEffect.cs" />
-    <Compile Include="EffectModifier\ICanDeactivateEffect.cs" />
-    <Compile Include="EffectModifier\IRequirementEffect.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ConfigExpander.cs" />
-    <Compile Include="Effects\NewKerbalExperience.cs" />
-    <Compile Include="Requirements\MinimumFacilityLevelRequirement.cs" />
-    <Compile Include="Effects\CurrencyOperationByBody.cs" />
-    <Compile Include="Strategy\UpgradeableStrategy.cs" />
-    <Compile Include="Strategy\StrategiaStrategy.cs" />
-    <Compile Include="Requirements\CelestialBodyRequirement.cs" />
-    <Compile Include="Strategy\Generic.cs" />
-    <Compile Include="Strategy\CelestialBodyProgram.cs" />
-    <Compile Include="Util\StrategyExtensions.cs" />
-    <Compile Include="Util\StringUtil.cs" />
-    <Compile Include="Util\CelestialBodyUtil.cs" />
-    <Compile Include="Util\TypeUtil.cs" />
-    <Compile Include="Util\VesselUtil.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetPath)" "E:\Games\Kerbal Space Program RP1\GameData\Strategia"
-</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /y &quot;$(TargetPath)&quot; &quot;$(SolutionDir)..\GameData\Strategia\&quot;&#xD;&#xA;copy /Y &quot;$(TargetPath)&quot; &quot;$(KSP)\GameData\Strategia\&quot;" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
