@@ -8,6 +8,10 @@ using Strategies;
 
 namespace Strategia
 {
+    public abstract class KerbinProgram : StrategiaStrategy { }
+    public class KerbinProgram0 : KerbinProgram { }
+    public class KerbinProgram1 : KerbinProgram { }
+
     public abstract class MoonProgram : StrategiaStrategy { }
     public class MoonProgram0 : MoonProgram { }
     public class MoonProgram1 : MoonProgram { }

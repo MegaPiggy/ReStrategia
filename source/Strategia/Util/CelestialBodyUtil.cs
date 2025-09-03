@@ -16,7 +16,7 @@ namespace Strategia
         {
             CelestialBody home = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).Single();
 
-			if (id == "KerbinProgram")
+            if (id == "KerbinProgram")
             {
                 yield return home;
             }
