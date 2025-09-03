@@ -316,6 +316,7 @@ namespace Strategia
 
         public static string BodyList(IEnumerable<CelestialBody> bodies, string conjunction)
         {
+            if (!bodies.Any()) return string.Empty;
             CelestialBody first = bodies.First();
             CelestialBody last = bodies.Last();
             string result = first.CleanDisplayName();

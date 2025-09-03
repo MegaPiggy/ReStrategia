@@ -245,7 +245,11 @@ namespace Strategia
             }
             if (result.Contains("$childBodyCount"))
             {
-                result = result.Replace("$childBodyCount", StringUtil.IntegerToRoman(body.orbitingBodies.Count()));
+                var childBodyCount = body.orbitingBodies.Count();
+                if (childBodyCount == 0) 
+                    result = result.Replace(" $childBodyCount", "");
+                else
+                    result = result.Replace("$childBodyCount", StringUtil.IntegerToRoman(childBodyCount));
             }
 
             return result;
