@@ -3,7 +3,7 @@
     "identifier": "ReStrategia",
     "$kref": "#/ckan/github/MegaPiggy/ReStrategia",
     "name": "ReStrategia",
-    "abstract": "Debugged version of Strategia from jrossignol. A complete rewrite of KSP's strategy system.",
+    "abstract": "An updated complete rewrite of KSP's strategy system.",
     "license": "MIT",
     "release_status": "stable",
     "author": "nightingale, MegaPiggy",
@@ -24,7 +24,16 @@
         "bugtracker": "https://github.com/MegaPiggy/ReStrategia/issues",
         "license": "https://raw.githubusercontent.com/MegaPiggy/ReStrategia/master/LICENSE.txt"
     },
+    "supports": [
+        { "name": "Komplexity" },
+        { "name": "Kopernicus" },
+        { "name": "KopernicusExpansionContinueder" },
+        { "name": "Singularity" }
+    ],
     "conflicts": [
         { "name": "Strategia" }
-    ]
+    ],
+    "suggests": {
+        { "name": "ProbesBeforeCrew" }
+    }
 }
