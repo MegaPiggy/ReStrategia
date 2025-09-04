@@ -48,10 +48,26 @@ namespace ReStrategia
         public bool RequirementMet(out string unmetReason)
         {
             unmetReason = null;
-            return invert ^ ProgressTracking.Instance.celestialBodyNodes.Where(node => bodies.Contains(node.Body)).Any(Check);
+            foreach (var node in ProgressTracking.Instance.celestialBodyNodes.Where(n => bodies.Contains(n.Body)))
+            {
+                if (Check(node, ref unmetReason))
+                {
+                    if (invert && string.IsNullOrEmpty(unmetReason))
+                    {
+                        unmetReason = $"Have {Verbed()} {CelestialBodyUtil.BodyList(bodies, "or")}";
+                    }
+                    return invert ? false : true;
+                }
+            }
+
+            if (!invert && string.IsNullOrEmpty(unmetReason))
+            {
+                unmetReason = $"Haven't {Verbed()} {CelestialBodyUtil.BodyList(bodies, "or")}";
+            }
+            return invert;
         }
 
-        protected abstract bool Check(CelestialBodySubtree cbs);
+        protected abstract bool Check(CelestialBodySubtree cbs, ref string unmetReason);
         protected abstract string Verbed();
     }
 
@@ -62,7 +78,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.IsReached;
         }
@@ -80,7 +96,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.orbit.IsReached;
         }
@@ -98,7 +114,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.landing.IsReached;
         }
@@ -116,7 +132,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.returnFromOrbit.IsReached;
         }
@@ -134,7 +150,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.returnFromSurface.IsReached;
         }
@@ -152,7 +168,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.flyBy.IsReached && cbs.flyBy.IsCompleteManned;
         }
@@ -170,7 +186,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.orbit.IsReached && cbs.orbit.IsCompleteManned;
         }
@@ -188,7 +204,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.landing.IsReached && cbs.landing.IsCompleteManned;
         }
@@ -206,7 +222,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             return cbs.returnFromOrbit.IsReached && cbs.returnFromOrbit.IsCompleteManned;
         }
@@ -224,7 +240,7 @@ namespace ReStrategia
         {
         }
 
-        protected override bool Check(CelestialBodySubtree cbs)
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
         {
             if (cbs.returnFromSurface.IsReached && cbs.returnFromSurface.IsCompleteManned)
             {
@@ -238,6 +254,94 @@ namespace ReStrategia
         protected override string Verbed()
         {
             return "returned a crew from the surface of";
+        }
+    }
+
+    public class VesselEnrouteRequirement : CelestialBodyRequirement
+    {
+        // Use 2.5 billion meters as the distance threshold (about 50 Duna SOIs)
+        const double distanceLimit = 2500000000;
+
+        public bool? manned;
+
+        public VesselEnrouteRequirement(Strategy parent)
+            : base(parent)
+        {
+        }
+
+        protected override void OnLoadFromConfig(ConfigNode node)
+        {
+            base.OnLoadFromConfig(node);
+            manned = ConfigNodeUtil.ParseValue<bool?>(node, "manned", null);
+        }
+
+        protected string MannedString => manned == null ? "" : manned.Value ? "crewed " : "uncrewed ";
+
+        protected override bool Check(CelestialBodySubtree cbs, ref string unmetReason)
+        {
+            foreach (Vessel vessel in FlightGlobals.Vessels)
+            {
+                // Crew check
+                if (manned != null)
+                {
+                    if (manned.Value && vessel.GetCrewCount() == 0) continue;
+                    if (!manned.Value && vessel.GetCrewCount() > 0) continue;
+                }
+
+                if (VesselIsEnroute(cbs.Body, vessel))
+                {
+                    if (invert)
+                    {
+                        unmetReason = $"{vessel.vesselName} is en route to {cbs.Body.CleanDisplayName(true)}";
+                    }
+                    return true;
+                }
+            }
+
+            if (!invert)
+            {
+                string mannedStr = MannedString;
+                unmetReason = $"No {mannedStr}vessels are en route to {cbs.Body.CleanDisplayName(true)}";
+            }
+            return false;
+        }
+
+        protected override string Verbed()
+        {
+            string mannedStr = MannedString;
+            return (invert ? "any " + mannedStr + "vessels" : "a " + mannedStr + "vessel") + " en route to";
+        }
+
+        protected bool VesselIsEnroute(CelestialBody body, Vessel vessel)
+        {
+            // Only check when in orbit of a system root
+            if (!CelestialBodyUtil.IsSystemRoot(vessel.mainBody))
+            {
+                return false;
+            }
+
+            // Ignore escaping or other silly things
+            if (vessel.situation != Vessel.Situations.ORBITING)
+            {
+                return false;
+            }
+
+            // Asteroids?  No...
+            if (vessel.vesselType == VesselType.SpaceObject || vessel.vesselType == VesselType.Debris)
+            {
+                return false;
+            }
+
+            // Check the orbit
+            Orbit vesselOrbit = vessel.loaded ? vessel.orbit : vessel.protoVessel.orbitSnapShot.Load();
+            Orbit bodyOrbit = body.orbit;
+            double minUT = Planetarium.GetUniversalTime();
+            double maxUT = minUT + vesselOrbit.period;
+            double UT = (maxUT - minUT) / 2.0;
+            int iterations = 0;
+            double distance = Orbit.SolveClosestApproach(vesselOrbit, bodyOrbit, ref UT, (maxUT - minUT) * 0.3, 0.0, minUT, maxUT, 0.1, 50, ref iterations);
+
+            return distance > 0 && distance < distanceLimit;
         }
     }
 }

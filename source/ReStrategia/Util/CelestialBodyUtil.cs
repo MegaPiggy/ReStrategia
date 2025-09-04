@@ -305,6 +305,11 @@ namespace ReStrategia
             return GetDirectMoons(secondary, solidsOnly);
         }
 
+        public static bool IsSystemRoot(CelestialBody cb)
+        {
+            return IsStellarObject(cb) || IsStellarBarycenter(cb);
+        }
+
         /// <summary>
         /// The Sun plus any stars/singularities/barycenters orbiting the Sun,
         /// and recursively any orbiting those.
@@ -317,7 +322,7 @@ namespace ReStrategia
 
             foreach (var cb in root.orbitingBodies)
             {
-                if (IsStellarObject(cb) || IsStellarBarycenter(cb))
+                if (IsSystemRoot(cb))
                 {
                     // recursively include any deeper stars/singularities/barycenters
                     foreach (var nested in GetSystemRoots(cb))
