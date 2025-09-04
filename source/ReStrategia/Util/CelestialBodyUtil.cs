@@ -28,7 +28,7 @@ namespace ReStrategia
 
         private static CelestialBodyType BodyType(CelestialBody cb)
         {
-            if (cb == null)
+            if (cb == null || IsHidden(cb))
             {
                 return CelestialBodyType.NOT_APPLICABLE;
             }
@@ -104,6 +104,11 @@ namespace ReStrategia
             return IsGasGiant(cb) && cb.orbitingBodies.Count() >= 2;
         }
 
+        private static bool IsHidden(CelestialBody cb)
+        {
+            return Version.VerifyKopernicusVersion() && KopernicusWrapper.IsRnDHidden(cb);
+        }
+
         private static bool IsSingularity(CelestialBody cb)
         {
             return Version.VerifySingularityVersion() && SingularityWrapper.IsSingularity(cb);
@@ -111,7 +116,7 @@ namespace ReStrategia
 
         private static bool IsBarycenter(CelestialBody cb)
         {
-            return cb.Radius <= BARYCENTER_THRESHOLD || Version.VerifyKopernicusVersion() && KopernicusWrapper.IsInvisible(cb);
+            return Version.VerifyKopernicusVersion() && (KopernicusWrapper.IsInvisible(cb) || KopernicusWrapper.IsRnDSkip(cb));
         }
 
         private static bool IsWormhole(CelestialBody cb)
@@ -134,6 +139,14 @@ namespace ReStrategia
 
             // If any of its orbiting bodies is a star or singularity, treat as stellar.
             return cb.orbitingBodies.Any(IsStellarObject);
+        }
+
+        private static bool IsPlanetaryBarycenter(CelestialBody cb)
+        {
+            if (!IsBarycenter(cb)) return false;
+
+            // If any orbiting body is a star/singularity, it's not planetary
+            return !cb.orbitingBodies.Any(IsStellarObject);
         }
 
         private static bool IsPlanet(CelestialBody cb)
@@ -196,7 +209,7 @@ namespace ReStrategia
             if (root == null) yield break;
             foreach (var child in root.orbitingBodies)
             {
-                if (IsPlanet(child) || (IsBarycenter(child) && !IsStellarBarycenter(child)))
+                if (IsPlanet(child) || IsPlanetaryBarycenter(child))
                     yield return child;
             }
         }
@@ -211,6 +224,9 @@ namespace ReStrategia
             {
                 if (IsTerrestrial(m))
                     yield return m;
+
+                foreach (var mm in GetSolidMoons(m))
+                    yield return mm;
             }
         }
 
@@ -312,7 +328,7 @@ namespace ReStrategia
             }
             else
             {
-                foreach (CelestialBody body in FlightGlobals.Bodies)
+                foreach (CelestialBody body in FlightGlobals.Bodies.Where(cb => BodyType(cb) != CelestialBodyType.NOT_APPLICABLE))
                     bag.Add(body);
             }
 
