@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using KSP;
 using ContractConfigurator;
+using Kopernicus.Configuration;
 
 namespace ReStrategia
 {
@@ -32,7 +33,7 @@ namespace ReStrategia
 
         public void DoDependencyCheck()
         {
-            if (ContractConfigurator.Util.Version.VerifyAssemblyVersion("CustomBarnKit", "1.0.0") == null)
+            if (Version.VerifyAssemblyVersion("CustomBarnKit", "1.0.0") == null)
             {
                 var ainfoV = Attribute.GetCustomAttribute(GetType().Assembly, typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
                 string title = "ReStrategia " + ainfoV.InformationalVersion + " Message";
@@ -59,28 +60,35 @@ namespace ReStrategia
                 Debug.Log("[ReStrategia] Expanding " + node.GetValue("id"));
                 foreach (CelestialBody body in CelestialBodyUtil.GetDistinctBodiesForStrategy(node.GetValue("id")))
                 {
-                    // Duplicate the node
-                    ConfigNode newStrategy = ExpandNode(node, body);
-                    newStrategy.name = "STRATEGY";
-
-                    // Name must be unique
-                    string name = node.GetValue("name");
-                    int current;
-                    names.TryGetValue(name, out current);
-                    names[name] = current + 1;
-                    name = name + current;
-                    newStrategy.SetValue("name", name);
-
-                    // Duplicate effect nodes
-                    foreach (ConfigNode effect in node.GetNodes("EFFECT"))
+                    try
                     {
-                        ConfigNode newEffect = ExpandNode(effect, body);
-                        newStrategy.AddNode(newEffect);
-                    }
+                        // Duplicate the node
+                        ConfigNode newStrategy = ExpandNode(node, body);
+                        newStrategy.name = "STRATEGY";
 
-                    // Add the cloned strategy to the config file
-                    Debug.Log("[ReStrategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
-                    config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
+                        // Name must be unique
+                        string name = node.GetValue("name");
+                        int current;
+                        names.TryGetValue(name, out current);
+                        names[name] = current + 1;
+                        name = name + current;
+                        newStrategy.SetValue("name", name);
+
+                        // Duplicate effect nodes
+                        foreach (ConfigNode effect in node.GetNodes("EFFECT"))
+                        {
+                            ConfigNode newEffect = ExpandNode(effect, body);
+                            newStrategy.AddNode(newEffect);
+                        }
+
+                        // Add the cloned strategy to the config file
+                        Debug.Log("[ReStrategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
+                        config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("[ReStrategia] Failed to generate strategy for body '" + body.name + "'\n" + e);
+                    }
 
                     yield return null;
                 }
@@ -95,46 +103,53 @@ namespace ReStrategia
                 int count = ConfigNodeUtil.ParseValue<int>(node, "factorSliderSteps");
                 for (int level = 1; level <= count; level++)
                 {
-                    // Duplicate the node
-                    ConfigNode newStrategy = ExpandNode(node, level);
-                    if (newStrategy == null)
+                    try
                     {
-                        continue;
-                    }
-                    newStrategy.name = "STRATEGY";
-
-                    // Name must be unique
-                    newStrategy.SetValue("name", newStrategy.GetValue("name") + level);
-
-                    // Set the title
-                    newStrategy.SetValue("title", newStrategy.GetValue("title") + " " + StringUtil.IntegerToRoman(level));
-
-                    // Set the group tag
-                    newStrategy.SetValue("groupTag", newStrategy.GetValue("groupTag") + StringUtil.IntegerToRoman(level));
-
-                    // Set the icon
-                    newStrategy.SetValue("icon", newStrategy.GetValue("icon") + level);
-
-                    if (newStrategy.HasValue("requiredReputation"))
-                    {
-                        float requiredReputation = ConfigNodeUtil.ParseValue<float>(newStrategy, "requiredReputation");
-                        newStrategy.SetValue("requiredReputationMin", requiredReputation.ToString(), true);
-                        newStrategy.SetValue("requiredReputationMax", requiredReputation.ToString(), true);
-                    }
-
-                    // Duplicate effect nodes
-                    foreach (ConfigNode effect in node.GetNodes("EFFECT"))
-                    {
-                        ConfigNode newEffect = ExpandNode(effect, level);
-                        if (newEffect != null)
+                        // Duplicate the node
+                        ConfigNode newStrategy = ExpandNode(node, level);
+                        if (newStrategy == null)
                         {
-                            newStrategy.AddNode(newEffect);
+                            continue;
                         }
-                    }
+                        newStrategy.name = "STRATEGY";
 
-                    // Add the cloned strategy to the config file
-                    Debug.Log("[ReStrategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
-                    config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
+                        // Name must be unique
+                        newStrategy.SetValue("name", newStrategy.GetValue("name") + level);
+
+                        // Set the title
+                        newStrategy.SetValue("title", newStrategy.GetValue("title") + " " + StringUtil.IntegerToRoman(level));
+
+                        // Set the group tag
+                        newStrategy.SetValue("groupTag", newStrategy.GetValue("groupTag") + StringUtil.IntegerToRoman(level));
+
+                        // Set the icon
+                        newStrategy.SetValue("icon", newStrategy.GetValue("icon") + level);
+
+                        if (newStrategy.HasValue("requiredReputation"))
+                        {
+                            float requiredReputation = ConfigNodeUtil.ParseValue<float>(newStrategy, "requiredReputation");
+                            newStrategy.SetValue("requiredReputationMin", requiredReputation.ToString(), true);
+                            newStrategy.SetValue("requiredReputationMax", requiredReputation.ToString(), true);
+                        }
+
+                        // Duplicate effect nodes
+                        foreach (ConfigNode effect in node.GetNodes("EFFECT"))
+                        {
+                            ConfigNode newEffect = ExpandNode(effect, level);
+                            if (newEffect != null)
+                            {
+                                newStrategy.AddNode(newEffect);
+                            }
+                        }
+
+                        // Add the cloned strategy to the config file
+                        Debug.Log("[ReStrategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
+                        config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("[ReStrategia] Failed to generate strategy for level " + level + "\n" + e);
+                    }
 
                     yield return null;
                 }
