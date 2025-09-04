@@ -42,7 +42,7 @@ namespace ReStrategia
 
         public string RequirementText()
         {
-            return "Must " + (invert ? "not " : "") + "have " + Verbed() + " " + CelestialBodyUtil.BodyList(bodies.Where(cb => !CelestialBodyUtil.IsBarycenter(cb)), "or");
+            return "Must " + (invert ? "not " : "") + "have " + Verbed() + " " + CelestialBodyUtil.BodyList(bodies.Where(CelestialBodyUtil.IsNotBarycenter), "or");
         }
 
         public bool RequirementMet(out string unmetReason)
@@ -52,20 +52,23 @@ namespace ReStrategia
             {
                 if (Check(node, ref unmetReason))
                 {
-                    if (invert && string.IsNullOrEmpty(unmetReason))
+                    if (DefaultInvertedUnmetReason && invert && string.IsNullOrEmpty(unmetReason))
                     {
-                        unmetReason = $"Have {Verbed()} {CelestialBodyUtil.BodyList(bodies, "or")}";
+                        unmetReason = $"Have {Verbed()} {node.Body.name}";
                     }
                     return invert ? false : true;
                 }
             }
 
-            if (!invert && string.IsNullOrEmpty(unmetReason))
+            if (DefaultUnmetReason && !invert && string.IsNullOrEmpty(unmetReason))
             {
                 unmetReason = $"Haven't {Verbed()} {CelestialBodyUtil.BodyList(bodies, "or")}";
             }
             return invert;
         }
+
+        protected virtual bool DefaultUnmetReason => false;
+        protected virtual bool DefaultInvertedUnmetReason => true;
 
         protected abstract bool Check(CelestialBodySubtree cbs, ref string unmetReason);
         protected abstract string Verbed();

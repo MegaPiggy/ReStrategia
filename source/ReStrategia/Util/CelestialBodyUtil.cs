@@ -131,6 +131,8 @@ namespace ReStrategia
             return Version.VerifyKopernicusVersion() && (KopernicusWrapper.IsInvisible(cb) || KopernicusWrapper.IsRnDSkip(cb));
         }
 
+        public static bool IsNotBarycenter(CelestialBody cb) => !IsBarycenter(cb);
+
         private static bool IsWormhole(CelestialBody cb)
         {
             return Version.VerifyKopernicusExpansionVersion() && KopernicusExpansionWrapper.IsWormhole(cb);
@@ -263,7 +265,7 @@ namespace ReStrategia
                     // Include barycenter’s primary/secondary
                     foreach (var body in GetBarycenterPrimaryAndSecondary(m))
                     {
-                        if (solidsOnly && IsSolid(m)) yield return body;
+                        if (!solidsOnly || IsSolid(body)) yield return body;
                     }
                 }
             }
@@ -408,9 +410,21 @@ namespace ReStrategia
                 if (!noPrimary && primary != null && (!solidsOnly || IsSolid(primary))) yield return primary;
                 if (secondary != null && (!solidsOnly || IsSolid(secondary))) yield return secondary;
 
-                foreach (var m in GetBarycenterMoons(node, solidsOnly)) yield return m;
-                foreach (var m in GetPrimaryMoons(node, solidsOnly)) yield return m;
-                foreach (var m in GetSecondaryMoons(node, solidsOnly)) yield return m;
+                foreach (var m in GetBarycenterMoons(node, solidsOnly))
+                {
+                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
+                    yield return m;
+                }
+                foreach (var m in GetPrimaryMoons(node, solidsOnly))
+                {
+                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
+                    yield return m;
+                }
+                foreach (var m in GetSecondaryMoons(node, solidsOnly))
+                {
+                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
+                    yield return m;
+                }
                 yield break;
             }
 
@@ -418,7 +432,11 @@ namespace ReStrategia
             if (IsPlanet(node))
             {
                 if (!noPrimary && (!solidsOnly || IsSolid(node))) yield return node;
-                foreach (var m in GetDirectMoons(node, solidsOnly)) yield return m;
+                foreach (var m in GetDirectMoons(node, solidsOnly))
+                {
+                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
+                    yield return m;
+                }
                 yield break;
             }
 

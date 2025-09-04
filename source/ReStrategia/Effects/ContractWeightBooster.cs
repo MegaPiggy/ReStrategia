@@ -25,7 +25,7 @@ namespace ReStrategia
 
         protected override string GetDescription()
         {
-            return "Increases likelihood of receiving contracts for " + CelestialBodyUtil.BodyList(bodies.Where(cb => !CelestialBodyUtil.IsBarycenter(cb)), "and") + ".";
+            return "Increases likelihood of receiving contracts for " + CelestialBodyUtil.BodyList(bodies.Where(CelestialBodyUtil.IsNotBarycenter), "and") + ".";
         }
 
         protected override void OnLoadFromConfig(ConfigNode node)

@@ -277,7 +277,7 @@ namespace ReStrategia
 
             if (result.Contains("$theBodies"))
             {
-                result = result.Replace("$theBodies", CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBodiesUnderNode(body, noPrimary: false), "and"));
+                result = result.Replace("$theBodies", CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBodiesUnderNode(body, solidsOnly: false, noBarycenter: true, noPrimary: false), "and"));
             }
 
             var hasChildBodies = result.Contains("$childBodies");
@@ -285,7 +285,7 @@ namespace ReStrategia
             var hasGasGiantMoons = result.Contains("$gasGiantMoons");
             if (hasChildBodies || hasChildBodyCount || hasGasGiantMoons)
             {
-                var childBodies = CelestialBodyUtil.GetBodiesUnderNode(body, solidsOnly: true);
+                var childBodies = CelestialBodyUtil.GetBodiesUnderNode(body, solidsOnly: true, noBarycenter: true, noPrimary: true);
                 if (hasChildBodies)
                 {
                     result = result.Replace("$childBodies", CelestialBodyUtil.BodyList(childBodies, "and"));
