@@ -33,7 +33,7 @@ namespace ReStrategia
             }
             if (nonKSCScienceMultiplier > 0.0)
             {
-                CelestialBody home = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).First();
+                CelestialBody home = FlightGlobals.Bodies.First(cb => cb.isHomeWorld);
                 yield return ToPercentage(nonKSCScienceMultiplier, "N0") + " bonus to " + home.CleanDisplayName(true) + " Science.";
             }
         }

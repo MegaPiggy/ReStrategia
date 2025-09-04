@@ -19,7 +19,7 @@ namespace ReStrategia
                 Type type = null;
                 try
                 {
-                    type = assembly.GetTypes().Where(t => t.Name == typeName).FirstOrDefault();
+                    type = assembly.GetTypes().FirstOrDefault(t => t.Name == typeName);
                 }
                 catch (Exception e)
                 {

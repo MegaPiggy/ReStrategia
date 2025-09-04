@@ -75,7 +75,7 @@ namespace ReStrategia
 
             // Check for upgrades
             IEnumerable<Strategy> activeStrategies = StrategySystem.Instance.Strategies.Where(s => s.IsActive);
-            UpgradeableStrategy conflictStrategy = activeStrategies.OfType<UpgradeableStrategy>().Where(s => s.Name == Name && s.Level != Level).FirstOrDefault();
+            UpgradeableStrategy conflictStrategy = activeStrategies.OfType<UpgradeableStrategy>().FirstOrDefault(s => s.Name == Name && s.Level != Level);
             if (conflictStrategy != null)
             {
                 // Remove the other strategy
@@ -114,7 +114,7 @@ namespace ReStrategia
             string result = "";
 
             IEnumerable<Strategy> activeStrategies = StrategySystem.Instance.Strategies.Where(s => s.IsActive);
-            UpgradeableStrategy conflictStrategy = activeStrategies.OfType<UpgradeableStrategy>().Where(s => s.Name == Name && s.Level != Level).FirstOrDefault();
+            UpgradeableStrategy conflictStrategy = activeStrategies.OfType<UpgradeableStrategy>().FirstOrDefault(s => s.Name == Name && s.Level != Level);
             if (conflictStrategy != null)
             {
                 result = "<i><color=#8BED8B>Can " + (conflictStrategy.Level > Level ? "downgrade" : "upgrade") + " from " + conflictStrategy.Title + " to " + Title + ".</color></i>\n\n";
@@ -128,7 +128,7 @@ namespace ReStrategia
             string result = "";
 
             IEnumerable<Strategy> activeStrategies = StrategySystem.Instance.Strategies.Where(s => s.IsActive);
-            conflictStrategy = activeStrategies.OfType<UpgradeableStrategy>().Where(s => s.Name == Name && s.Level != Level).FirstOrDefault();
+            conflictStrategy = activeStrategies.OfType<UpgradeableStrategy>().FirstOrDefault(s => s.Name == Name && s.Level != Level);
             float fundsDiscount = 0.0f;
             float scienceDiscount = 0.0f;
             float reputationDiscount = 0.0f;

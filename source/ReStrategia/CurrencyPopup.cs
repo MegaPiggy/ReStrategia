@@ -307,7 +307,7 @@ namespace ReStrategia
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 16,
                 fontStyle = FontStyle.Bold,
-                font = UnityEngine.Resources.FindObjectsOfTypeAll<Font>().Where(f => f.name == "calibri").First(),
+                font = UnityEngine.Resources.FindObjectsOfTypeAll<Font>().First(f => f.name == "calibri"),
             };
         }
 

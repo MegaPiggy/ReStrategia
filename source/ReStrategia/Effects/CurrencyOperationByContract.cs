@@ -86,7 +86,7 @@ namespace ReStrategia
             // Add any child groups
             foreach (string type in contractTypes.ToList())
             {
-                ContractGroup group = ContractGroup.AllGroups.Where(g => g!= null && g.name == type).FirstOrDefault();
+                ContractGroup group = ContractGroup.AllGroups.FirstOrDefault(g => g != null && g.name == type);
                 if (group != null)
                 {
                     foreach (ContractGroup child in ChildGroups(group))

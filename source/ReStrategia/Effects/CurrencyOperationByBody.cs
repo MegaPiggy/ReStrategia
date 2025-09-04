@@ -74,7 +74,7 @@ namespace ReStrategia
             // Reflection hack time.  There is a member that is (sometimes) private that stores the celestial body.
             // Other times it's public, but this will catch that too.
             FieldInfo cbField = node.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).
-                Where(fi => fi.FieldType == typeof(CelestialBody)).FirstOrDefault();
+                FirstOrDefault(fi => fi.FieldType == typeof(CelestialBody));
             if (cbField != null)
             {
                 lastBody = (CelestialBody)cbField.GetValue(node);

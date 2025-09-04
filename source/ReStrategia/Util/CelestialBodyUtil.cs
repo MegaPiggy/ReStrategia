@@ -225,7 +225,7 @@ namespace ReStrategia
         public static IEnumerable<CelestialBody> GetBodiesForStrategy(string id)
         {
             CelestialBody sun = FlightGlobals.Bodies[0];
-            CelestialBody home = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).Single();
+            CelestialBody home = FlightGlobals.Bodies.Single(cb => cb.isHomeWorld);
 
             var roots = GetSystemRoots(sun).ToList();
 

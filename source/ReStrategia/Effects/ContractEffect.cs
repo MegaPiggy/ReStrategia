@@ -46,7 +46,7 @@ namespace ReStrategia
                     if (effect.contract == null)
                     {
                         effect.contract = ContractSystem.Instance.GetCurrentActiveContracts<ConfiguredContract>().
-                            Where(c => c.contractType != null && c.contractType.name == effect.contractType).FirstOrDefault();
+                            FirstOrDefault(c => c.contractType != null && c.contractType.name == effect.contractType);
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace ReStrategia
         protected override void OnLoadFromConfig(ConfigNode node)
         {
             contractType = ConfigNodeUtil.ParseValue<string>(node, "contractType");
-            targetBody = ConfigNodeUtil.ParseValue<CelestialBody>(node, "targetBody", FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).First());
+            targetBody = ConfigNodeUtil.ParseValue<CelestialBody>(node, "targetBody", FlightGlobals.Bodies.First(cb => cb.isHomeWorld));
             bodies = ConfigNodeUtil.ParseValue<List<CelestialBody>>(node, "bodies", CelestialBodyUtil.GetDistinctBodiesForStrategy(Parent.Config.Name).ToList());
             rewardFunds = ConfigNodeUtil.ParseValue<double>(node, "rewardFunds", 0.0);
             rewardScience = ConfigNodeUtil.ParseValue<float>(node, "rewardScience", 0.0f);

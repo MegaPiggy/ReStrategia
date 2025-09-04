@@ -258,7 +258,7 @@ namespace ReStrategia
         public string FormatString(string input)
         {
             string result = input.
-                Replace("$homeWorld", FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).First().name);
+                Replace("$homeWorld", FlightGlobals.Bodies.First(cb => cb.isHomeWorld).name);
             return result;
         }
     }

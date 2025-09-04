@@ -85,7 +85,7 @@ namespace ReStrategia
                     return;
                 }
 
-                CelestialBody homeworld = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault();
+                CelestialBody homeworld = FlightGlobals.Bodies.FirstOrDefault(cb => cb.isHomeWorld);
 
                 Debug.Log("[ReStrategia] Awarding experience to " + pcm.name);
 
@@ -111,11 +111,11 @@ namespace ReStrategia
                 if (ac != null)
                 {
                     MethodInfo updateListMethod = typeof(AstronautComplex).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).
-                        Where(mi => mi.Name == "CreateAvailableList").First();
+                        First(mi => mi.Name == "CreateAvailableList");
                     updateListMethod.Invoke(ac, new object[] { });
 
                     MethodInfo addToListMethod = typeof(AstronautComplex).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).
-                        Where(mi => mi.Name == "AddItem_Available").First();
+                        First(mi => mi.Name == "AddItem_Available");
                     addToListMethod.Invoke(ac, new object[] { pcm });
                 }
             }

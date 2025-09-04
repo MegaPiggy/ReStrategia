@@ -33,7 +33,7 @@ namespace ReStrategia
 
         public bool RequirementMet(out string unmetReason)
         {
-            Strategy conflict = StrategySystem.Instance.Strategies.Where(s => s.Title != Parent.Title && s.GroupTags.First() == group && s.IsActive).FirstOrDefault();
+            Strategy conflict = StrategySystem.Instance.Strategies.FirstOrDefault(s => s.Title != Parent.Title && s.GroupTags.First() == group && s.IsActive);
             unmetReason = conflict != null ? (conflict.Title + " is active") : null;
             return conflict == null;
         }
