@@ -119,14 +119,21 @@ namespace ReStrategia
             return Version.VerifyKopernicusExpansionVersion() && KopernicusExpansionWrapper.IsWormhole(cb);
         }
 
-        private static bool IsDirectRoot(CelestialBody cb)
+        private static bool IsStellarObject(CelestialBody cb)
         {
             return BodyType(cb) is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY;
         }
 
-        private static bool IsRoot(CelestialBody cb)
+        /// <summary>
+        /// True if this barycenter is grouping stars/singularities (system-level).
+        /// False if it's a planetary barycenter (should be processed with planets).
+        /// </summary>
+        private static bool IsStellarBarycenter(CelestialBody cb)
         {
-            return BodyType(cb) is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY or CelestialBodyType.BARYCENTER;
+            if (!IsBarycenter(cb)) return false;
+
+            // If any of its orbiting bodies is a star or singularity, treat as stellar.
+            return cb.orbitingBodies.Any(IsStellarObject);
         }
 
         private static bool IsPlanet(CelestialBody cb)
@@ -146,7 +153,7 @@ namespace ReStrategia
 
             foreach (var cb in root.orbitingBodies)
             {
-                if (BodyType(cb) is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY or CelestialBodyType.BARYCENTER)
+                if (BodyType(cb) is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY || IsStellarBarycenter(cb))
                 {
                     // recursively include any deeper stars/singularities/barycenters
                     foreach (var nested in GetSystemRoots(cb))
@@ -182,14 +189,14 @@ namespace ReStrategia
         }
 
         /// <summary>
-        /// Children of a root that count as planets (terrestrial or gas giant).
+        /// Children of a root that count as planets (terrestrial, gas giant, or planetary barycenter).
         /// </summary>
         private static IEnumerable<CelestialBody> GetPlanetsUnderRoot(CelestialBody root)
         {
             if (root == null) yield break;
             foreach (var child in root.orbitingBodies)
             {
-                if (IsPlanet(child))
+                if (IsPlanet(child) || (IsBarycenter(child) && !IsStellarBarycenter(child)))
                     yield return child;
             }
         }
@@ -237,7 +244,7 @@ namespace ReStrategia
                     yield return child;
 
                 // Special case for mods where Kerbin is a Gas Giant's moon
-                if (!IsDirectRoot(home.referenceBody))
+                if (!IsStellarObject(home.referenceBody))
                 {
                     foreach (CelestialBody child in home.referenceBody.orbitingBodies.Where(cb => cb != home))
                         yield return child;
