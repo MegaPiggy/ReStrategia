@@ -24,7 +24,8 @@ namespace Strategia
         void Start()
         {
             StartCoroutine(CheckStrategyState());
-            GameEvents.onFacilityContextMenuSpawn.Add(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
+            //Leosky : This was erasing Custom Barn modifications
+            //GameEvents.onFacilityContextMenuSpawn.Add(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
         }
 
         IEnumerator<YieldInstruction> CheckStrategyState()
@@ -203,7 +204,8 @@ namespace Strategia
             }
         }
 
-        static FieldInfo facilityName = typeof(KSCFacilityContextMenu).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(fi => fi.Name == "facilityName").First();
+        //Leosky : Outdated from a past version of Custom Barn ?
+        /*static FieldInfo facilityName = typeof(KSCFacilityContextMenu).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(fi => fi.Name == "facilityName").First();
         void OnFacilityContextMenuSpawn(KSCFacilityContextMenu menu)
         {
             string name = (string)facilityName.GetValue(menu);
@@ -232,6 +234,6 @@ namespace Strategia
 
                 yield return null;
             }
-        }
+        }*/
     }
 }
