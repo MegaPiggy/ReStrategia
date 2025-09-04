@@ -30,9 +30,12 @@ namespace ReStrategia
 
             RegisterMethod(new Method<StrategiaStrategy, CelestialBody>("targetBody", s => ContractEffectField(s, ce => ce.targetBody)));
             RegisterMethod(new Method<StrategiaStrategy, List<CelestialBody>>("bodies", s => ContractEffectField(s, ce => ce.bodies)));
+            RegisterMethod(new Method<StrategiaStrategy, List<Biome>>("biomes", Biomes));
             RegisterMethod(new Method<StrategiaStrategy, string>("description", s => s != null ? s.Description : ""));
             RegisterMethod(new Method<StrategiaStrategy, string>("synopsis", s => ContractEffectField(s, ce => ce.synopsis)));
             RegisterMethod(new Method<StrategiaStrategy, string>("completedMessage", s => ContractEffectField(s, ce => ce.completedMessage)));
+            RegisterMethod(new Method<StrategiaStrategy, string>("failureMessage", s => ContractEffectField(s, ce => ce.failureMessage)));
+            RegisterMethod(new Method<StrategiaStrategy, string>("parameterTitle", s => ContractEffectField(s, ce => ce.parameterTitle)));
 
             RegisterMethod(new Method<StrategiaStrategy, double>("advanceFunds", s => ContractEffectField(s, ce => ce.advanceFunds)));
             RegisterMethod(new Method<StrategiaStrategy, double>("rewardFunds", s => ContractEffectField(s, ce => ce.rewardFunds)));
@@ -63,6 +66,13 @@ namespace ReStrategia
             }
 
             return func.Invoke(contractEffect);
+        }
+
+        private static List<Biome> Biomes(StrategiaStrategy strategy)
+        {
+            List<CelestialBody> bodies = ContractEffectField(strategy, ce => ce.bodies);
+            return bodies != null ? bodies.SelectMany(cb => cb != null && cb.BiomeMap != null ?
+                cb.BiomeMap.Attributes.Select(att => new Biome(cb, att.name)).ToList() : new List<Biome>()).ToList() : new List<Biome>();
         }
 
         public override bool ConvertableFrom(Type type)

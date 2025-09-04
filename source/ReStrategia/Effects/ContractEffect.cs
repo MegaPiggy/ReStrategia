@@ -66,6 +66,7 @@ namespace ReStrategia
         public string synopsis;
         public string completedMessage;
         public string failureMessage;
+        public string parameterTitle;
 
         public string contractType;
 
@@ -110,9 +111,13 @@ namespace ReStrategia
             advanceFunds = ConfigNodeUtil.ParseValue<double>(node, "advanceFunds", 0.0);
             advanceScience = ConfigNodeUtil.ParseValue<float>(node, "advanceScience", 0.0f);
             advanceReputation = ConfigNodeUtil.ParseValue<float>(node, "advanceReputation", 0.0f);
-            synopsis = ConfigNodeUtil.ParseValue<string>(node, "synopsis");
+            if ((node.HasValue("synopsisPlural") || node.HasNode("synopsisPlural")) && bodies != null && bodies.Count > 1)
+                synopsis = ConfigNodeUtil.ParseValue<string>(node, "synopsisPlural");
+            else
+                synopsis = ConfigNodeUtil.ParseValue<string>(node, "synopsis");
             completedMessage = ConfigNodeUtil.ParseValue<string>(node, "completedMessage");
             failureMessage = ConfigNodeUtil.ParseValue<string>(node, "failureMessage");
+            parameterTitle = ConfigNodeUtil.ParseValue<string>(node, "parameterTitle", string.Empty);
         }
 
         protected override void OnRegister()

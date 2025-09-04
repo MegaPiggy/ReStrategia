@@ -199,6 +199,7 @@ namespace ReStrategia
         public ConfigNode ExpandNode(ConfigNode node, CelestialBody body)
         {
             ConfigNode newNode = new ConfigNode(node.name);
+            CelestialBody displayBody = CelestialBodyUtil.IsSigmaBinary(body) ? CelestialBodyUtil.GetBarycenterPrimary(body) : body;
 
             foreach (ConfigNode.Value pair in node.values)
             {
@@ -206,9 +207,9 @@ namespace ReStrategia
                 if (node.HasNode(pair.name))
                 {
                     ConfigNode overrideNode = node.GetNode(pair.name);
-                    if (overrideNode.HasValue(body.name))
+                    if (overrideNode.HasValue(displayBody.name))
                     {
-                        value = overrideNode.GetValue(body.name);
+                        value = overrideNode.GetValue(displayBody.name);
                     }
                 }
 
@@ -232,10 +233,28 @@ namespace ReStrategia
         {
             if (list == "@bodies")
             {
-                yield return body.name;
-                foreach (CelestialBody child in body.orbitingBodies)
+                foreach (CelestialBody cb in CelestialBodyUtil.GetBodiesUnderNode(body, solidsOnly: false, noBarycenter: false, noPrimary: false))
                 {
-                    yield return child.name;
+                    yield return cb.name;
+                }
+            }
+            else if (list == "@primarySecondary")
+            {
+                if (CelestialBodyUtil.IsBarycenter(body))
+                {
+                    foreach (CelestialBody cb in CelestialBodyUtil.GetBarycenterPrimaryAndSecondary(body))
+                    {
+                        yield return cb.name;
+                    }
+                }
+                else
+                    yield return body.name;
+            }
+            else if (list == "@solidMoons")
+            {
+                foreach (CelestialBody cb in CelestialBodyUtil.GetBodiesUnderNode(body, solidsOnly: true, noBarycenter: true, noPrimary: true))
+                {
+                    yield return cb.name;
                 }
             }
             else
@@ -246,25 +265,46 @@ namespace ReStrategia
 
         public string FormatBodyString(string input, CelestialBody body)
         {
+            CelestialBody displayBody  = CelestialBodyUtil.IsSigmaBinary(body) ? CelestialBodyUtil.GetBarycenterPrimary(body) : body;
+            CelestialBody primary = CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.GetBarycenterPrimary(body) : body;
             string result = input.
-                Replace("$body", body.name).
-                Replace("$theBody", body.CleanDisplayName());
+                Replace("$body", displayBody.name).
+                Replace("$culledName", CelestialBodyUtil.IsBarycenter(displayBody) ? displayBody.CleanDisplayName() : displayBody.name).
+                Replace("$primaryBody", primary.name).
+                Replace("$theBody", primary.CleanDisplayName()).
+                Replace("$primaryAndSecondary", CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBarycenterPrimaryAndSecondary(body), "and") : primary.CleanDisplayName()).
+                Replace("$primaryOrSecondary", CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBarycenterPrimaryAndSecondary(body), "or") : primary.CleanDisplayName());
 
             if (result.Contains("$theBodies"))
             {
-                result = result.Replace("$theBodies", CelestialBodyUtil.BodyList(Enumerable.Repeat(body, 1).Union(body.orbitingBodies), "and"));
+                result = result.Replace("$theBodies", CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBodiesUnderNode(body, noPrimary: false), "and"));
             }
-            if (result.Contains("$childBodies"))
+
+            var hasChildBodies = result.Contains("$childBodies");
+            var hasChildBodyCount = result.Contains("$childBodyCount");
+            var hasGasGiantMoons = result.Contains("$gasGiantMoons");
+            if (hasChildBodies || hasChildBodyCount || hasGasGiantMoons)
             {
-                result = result.Replace("$childBodies", CelestialBodyUtil.BodyList(body.orbitingBodies, "and"));
-            }
-            if (result.Contains("$childBodyCount"))
-            {
-                var childBodyCount = body.orbitingBodies.Count();
-                if (childBodyCount == 0) 
-                    result = result.Replace(" $childBodyCount", "");
-                else
-                    result = result.Replace("$childBodyCount", StringUtil.IntegerToRoman(childBodyCount));
+                var childBodies = CelestialBodyUtil.GetBodiesUnderNode(body, solidsOnly: true);
+                if (hasChildBodies)
+                {
+                    result = result.Replace("$childBodies", CelestialBodyUtil.BodyList(childBodies, "and"));
+                }
+                var childBodyCount = childBodies.Count();
+                if (hasChildBodyCount)
+                {
+                    if (childBodyCount >= 1)
+                        result = result.Replace("$childBodyCount", StringUtil.IntegerToRoman(childBodyCount));
+                    else
+                        result = result.Replace(" $childBodyCount", "");
+                }
+                if (hasGasGiantMoons)
+                {
+                    if (childBodyCount >= 1)
+                        result = result.Replace("$gasGiantMoons", "each of " + primary.CleanDisplayName() + "'s moons");
+                    else
+                        result = result.Replace("$gasGiantMoons", primary.CleanDisplayName() + "'s moon");
+                }
             }
 
             return result;

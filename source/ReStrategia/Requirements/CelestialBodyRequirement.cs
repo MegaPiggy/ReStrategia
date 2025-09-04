@@ -42,13 +42,13 @@ namespace ReStrategia
 
         public string RequirementText()
         {
-            return "Must " + (invert ? "not " : "") + "have " + Verbed() + " " + CelestialBodyUtil.BodyList(bodies, "or");
+            return "Must " + (invert ? "not " : "") + "have " + Verbed() + " " + CelestialBodyUtil.BodyList(bodies.Where(cb => !CelestialBodyUtil.IsBarycenter(cb)), "or");
         }
 
         public bool RequirementMet(out string unmetReason)
         {
             unmetReason = null;
-            return invert ^ ProgressTracking.Instance.celestialBodyNodes.Where(node => bodies.Contains(node.Body)).Any(cbs => Check(cbs));
+            return invert ^ ProgressTracking.Instance.celestialBodyNodes.Where(node => bodies.Contains(node.Body)).Any(Check);
         }
 
         protected abstract bool Check(CelestialBodySubtree cbs);

@@ -48,7 +48,7 @@ namespace ReStrategia
             // Remove the excluded ones
             if (excludeBodies.Any())
             {
-                bodies.RemoveAll(cb => excludeBodies.Contains(cb));
+                bodies.RemoveAll(excludeBodies.Contains);
             }
         }
 

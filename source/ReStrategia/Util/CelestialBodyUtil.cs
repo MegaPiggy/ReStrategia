@@ -7,6 +7,7 @@ using KSP;
 using ContractConfigurator;
 using Kopernicus.Configuration;
 using Kopernicus.UI;
+using Expansions.Missions;
 
 namespace ReStrategia
 {
@@ -54,7 +55,7 @@ namespace ReStrategia
             }
 
             // Add a special case for barycenters (Sigma binary)
-            var isTerrestrial = IsTerrestrial(cb);
+            var isTerrestrial = IsSolid(cb);
             var referenceType = BodyType(cb.referenceBody);
             if (referenceType is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY or CelestialBodyType.BARYCENTER)
             {
@@ -81,7 +82,7 @@ namespace ReStrategia
                 return CelestialBodyType.MOON;
             }
 
-            if (IsGasGiant(cb))
+            if (IsNotSolid(cb))
             {
                 return CelestialBodyType.GAS_GIANT;
             }
@@ -89,19 +90,14 @@ namespace ReStrategia
             return CelestialBodyType.NOT_APPLICABLE;
         }
 
-        private static bool IsTerrestrial(CelestialBody cb)
+        private static bool IsSolid(CelestialBody cb)
         {
-            return cb.pqsController != null && cb.hasSolidSurface;
+            return cb.pqsController != null && cb.hasSolidSurface && !IsWormhole(cb);
         }
 
-        private static bool IsGasGiant(CelestialBody cb)
+        private static bool IsNotSolid(CelestialBody cb)
         {
             return (cb.pqsController == null || !cb.hasSolidSurface);
-        }
-
-        private static bool IsGasGiantWithManyMoons(CelestialBody cb)
-        {
-            return IsGasGiant(cb) && cb.orbitingBodies.Count() >= 2;
         }
 
         private static bool IsHidden(CelestialBody cb)
@@ -114,7 +110,23 @@ namespace ReStrategia
             return Version.VerifySingularityVersion() && SingularityWrapper.IsSingularity(cb);
         }
 
-        private static bool IsBarycenter(CelestialBody cb)
+        /// <summary>
+        /// Detects if this barycenter follows the SigmaBinary pattern:
+        /// - Has a NOT_APPLICABLE child in orbitingBodies
+        /// - Only one real body directly under the barycenter (the primary)
+        /// </summary>
+        public static bool IsSigmaBinary(CelestialBody bary)
+        {
+            if (!IsPlanetaryBarycenter(bary)) return false;
+
+            // Must contain at least one NOT_APPLICABLE body
+            bool hasNotApplicable = bary.orbitingBodies.Any(cb => BodyType(cb) == CelestialBodyType.NOT_APPLICABLE);
+            int realChildren = bary.orbitingBodies.Count(cb => BodyType(cb) != CelestialBodyType.NOT_APPLICABLE && !IsBarycenter(cb));
+
+            return hasNotApplicable && realChildren == 1;
+        }
+
+        public static bool IsBarycenter(CelestialBody cb)
         {
             return Version.VerifyKopernicusVersion() && (KopernicusWrapper.IsInvisible(cb) || KopernicusWrapper.IsRnDSkip(cb));
         }
@@ -127,6 +139,21 @@ namespace ReStrategia
         private static bool IsStellarObject(CelestialBody cb)
         {
             return BodyType(cb) is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY;
+        }
+
+        private static bool IsTerrestrial(CelestialBody cb)
+        {
+            return BodyType(cb) is CelestialBodyType.TERRESTRIAL;
+        }
+
+        private static bool IsGasGiant(CelestialBody cb)
+        {
+            return BodyType(cb) is CelestialBodyType.GAS_GIANT;
+        }
+
+        private static bool IsPlanet(CelestialBody cb)
+        {
+            return BodyType(cb) is CelestialBodyType.TERRESTRIAL or CelestialBodyType.GAS_GIANT;
         }
 
         /// <summary>
@@ -149,9 +176,133 @@ namespace ReStrategia
             return !cb.orbitingBodies.Any(IsStellarObject);
         }
 
-        private static bool IsPlanet(CelestialBody cb)
+        /// <summary>
+        /// From a planetary barycenter, return its non-stellar, non-barycenter children
+        /// ordered by Mass descending. Typically the first two are primary/secondary.
+        /// </summary>
+        private static List<CelestialBody> GetBarycenterComponents(CelestialBody bary)
         {
-            return BodyType(cb) is CelestialBodyType.TERRESTRIAL or CelestialBodyType.GAS_GIANT;
+            if (bary == null || !IsPlanetaryBarycenter(bary)) return new List<CelestialBody>();
+
+            if (IsSigmaBinary(bary))
+            {
+                var sigmaBinaryComponents = new List<CelestialBody>();
+                // Primary is the only real child of the barycenter
+                var primary = bary.orbitingBodies.FirstOrDefault(cb =>
+                    BodyType(cb) != CelestialBodyType.NOT_APPLICABLE && !IsBarycenter(cb));
+                sigmaBinaryComponents.Add(primary);
+                // Look inside primary’s orbitingBodies for all the rest
+                sigmaBinaryComponents.AddRange(primary.orbitingBodies);
+                return sigmaBinaryComponents
+                    .Where(cb => !IsStellarObject(cb) && !IsBarycenter(cb))
+                    .OrderByDescending(cb => cb.Mass)
+                    .ToList();
+            }
+
+            return bary.orbitingBodies
+                .Where(cb => !IsStellarObject(cb) && !IsBarycenter(cb))
+                .OrderByDescending(cb => cb.Mass)
+                .ToList();
+        }
+
+        public static IEnumerable<CelestialBody> GetBarycenterPrimaryAndSecondary(CelestialBody bary)
+        {
+            if (bary == null) return new List<CelestialBody>();
+
+            var comps = GetBarycenterComponents(bary);
+            return comps.Count > 0 ? comps.Take(2) : new List<CelestialBody> { bary };
+        }
+
+        /// <summary> Primary of a planetary barycenter (by mass). </summary>
+        public static CelestialBody GetBarycenterPrimary(CelestialBody bary)
+        {
+            if (bary == null) return null;
+
+            var comps = GetBarycenterComponents(bary);
+            return comps.Count > 0 ? comps[0] : null;
+        }
+
+        /// <summary> Secondary of a planetary barycenter (by mass). </summary>
+        public static CelestialBody GetBarycenterSecondary(CelestialBody bary)
+        {
+            if (bary == null) return null;
+
+            var comps = GetBarycenterComponents(bary);
+            return comps.Count > 1 ? comps[1] : null;
+        }
+
+
+        /// <summary>
+        /// True if the body should be considered a "moon-like" child of parent for strategy lists,
+        /// honoring the solidsOnly filter. Excludes stellar objects and barycenters.
+        /// </summary>
+        private static bool IsMoonLike(CelestialBody child, bool solidsOnly)
+        {
+            if (child == null) return false;
+            if (IsStellarObject(child) || IsBarycenter(child)) return false;
+            if (solidsOnly) return IsSolid(child);
+            // include any non-stellar, non-barycenter (terrestrial or gas giant)
+            return BodyType(child) is not CelestialBodyType.NOT_APPLICABLE and not CelestialBodyType.WORMHOLE;
+        }
+
+        /// <summary> Moons that orbit the given parent directly (filtered). </summary>
+        private static IEnumerable<CelestialBody> GetDirectMoons(CelestialBody parent, bool solidsOnly)
+        {
+            if (parent == null) yield break;
+            foreach (var m in parent.orbitingBodies)
+            {
+                // Normal moon
+                if (IsMoonLike(m, solidsOnly))
+                {
+                    yield return m;
+                }
+                // Special case: barycenter orbiting a planet
+                else if (IsPlanetaryBarycenter(m))
+                {
+                    if (!solidsOnly) yield return m;
+                    // Include barycenter’s primary/secondary
+                    foreach (var body in GetBarycenterPrimaryAndSecondary(m))
+                    {
+                        if (solidsOnly && IsSolid(m)) yield return body;
+                    }
+                }
+            }
+        }
+
+        /// <summary> Moons of the planetary barycenter itself (exclude its primary/secondary). </summary>
+        private static IEnumerable<CelestialBody> GetBarycenterMoons(CelestialBody bary, bool solidsOnly)
+        {
+            if (bary == null || !IsPlanetaryBarycenter(bary)) yield break;
+
+            var primary = GetBarycenterPrimary(bary);
+            var secondary = GetBarycenterSecondary(bary);
+
+            foreach (var m in bary.orbitingBodies)
+            {
+                if (m == primary || m == secondary) continue;
+                if (IsMoonLike(m, solidsOnly))
+                    yield return m;
+            }
+        }
+
+        /// <summary> Moons of the primary component of a planetary barycenter. </summary>
+        private static IEnumerable<CelestialBody> GetPrimaryMoons(CelestialBody bary, bool solidsOnly)
+        {
+            var primary = GetBarycenterPrimary(bary);
+            var directMoons = GetDirectMoons(primary, solidsOnly);
+            if (IsSigmaBinary(bary))
+            {
+                var secondary = GetBarycenterSecondary(bary);
+                return directMoons.Where(cb => cb != secondary);
+            }
+            return directMoons;
+        }
+
+        /// <summary> Moons of the secondary component of a planetary barycenter. </summary>
+        private static IEnumerable<CelestialBody> GetSecondaryMoons(CelestialBody bary, bool solidsOnly)
+        {
+            var secondary = GetBarycenterSecondary(bary);
+            return GetDirectMoons(secondary, solidsOnly);
         }
 
         /// <summary>
@@ -166,7 +317,7 @@ namespace ReStrategia
 
             foreach (var cb in root.orbitingBodies)
             {
-                if (BodyType(cb) is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY || IsStellarBarycenter(cb))
+                if (IsStellarObject(cb) || IsStellarBarycenter(cb))
                 {
                     // recursively include any deeper stars/singularities/barycenters
                     foreach (var nested in GetSystemRoots(cb))
@@ -176,37 +327,12 @@ namespace ReStrategia
         }
 
         /// <summary>
-        /// Children of a root that count as terrestrial planets.
-        /// </summary>
-        private static IEnumerable<CelestialBody> GetTerrestrialPlanetsUnderRoot(CelestialBody root)
-        {
-            if (root == null) yield break;
-            foreach (var child in root.orbitingBodies)
-            {
-                if (BodyType(child) is CelestialBodyType.TERRESTRIAL)
-                    yield return child;
-            }
-        }
-
-        /// <summary>
-        /// Children of a root that count as gas giant planets.
-        /// </summary>
-        private static IEnumerable<CelestialBody> GetGasGiantPlanetsUnderRoot(CelestialBody root)
-        {
-            if (root == null) yield break;
-            foreach (var child in root.orbitingBodies)
-            {
-                if (BodyType(child) is CelestialBodyType.GAS_GIANT)
-                    yield return child;
-            }
-        }
-
-        /// <summary>
         /// Children of a root that count as planets (terrestrial, gas giant, or planetary barycenter).
         /// </summary>
         private static IEnumerable<CelestialBody> GetPlanetsUnderRoot(CelestialBody root)
         {
             if (root == null) yield break;
+
             foreach (var child in root.orbitingBodies)
             {
                 if (IsPlanet(child) || IsPlanetaryBarycenter(child))
@@ -215,18 +341,104 @@ namespace ReStrategia
         }
 
         /// <summary>
-        /// Solid-surface moons of a given planet.
+        /// All “planet nodes” under a root: regular planets, plus planetary barycenters
+        /// whose PRIMARY matches the requested predicate (e.g., terrestrial-only or gas-giant-only).
         /// </summary>
-        private static IEnumerable<CelestialBody> GetSolidMoons(CelestialBody planet)
+        private static IEnumerable<CelestialBody> GetPlanetNodesUnderRoot(
+            CelestialBody root,
+            Func<CelestialBody, bool> primaryPredicate)
         {
-            if (planet == null) yield break;
-            foreach (var m in planet.orbitingBodies)
-            {
-                if (IsTerrestrial(m))
-                    yield return m;
+            if (root == null) yield break;
 
-                foreach (var mm in GetSolidMoons(m))
-                    yield return mm;
+            foreach (var child in root.orbitingBodies)
+            {
+                if (IsPlanetaryBarycenter(child))
+                {
+                    var primary = GetBarycenterPrimary(child);
+                    if (primary != null && primaryPredicate(primary))
+                        yield return child; // return the barycenter node
+                }
+                else if (IsPlanet(child) && primaryPredicate(child))
+                {
+                    yield return child; // standalone planet node
+                }
+            }
+        }
+
+        /// <summary> Children of a root that count as terrestrial planet nodes. </summary>
+        private static IEnumerable<CelestialBody> GetTerrestrialPlanetsUnderRoot(CelestialBody root)
+        {
+            return GetPlanetNodesUnderRoot(
+                root,
+                IsTerrestrial
+            );
+        }
+
+        /// <summary> Children of a root that count as gas giant planet nodes. </summary>
+        private static IEnumerable<CelestialBody> GetGasGiantPlanetsUnderRoot(CelestialBody root)
+        {
+            return GetPlanetNodesUnderRoot(
+                root,
+                IsGasGiant
+            );
+        }
+
+        /// <summary>
+        /// Return everything “under” a node suitable for mission lists.
+        /// - If node is a regular planet: returns the planet (if noPrimary is false) and its moons (filtered by solidsOnly).
+        /// - If node is a planetary barycenter: returns primary (if noPrimary is false), secondary,
+        ///   plus moons of (barycenter, primary, secondary), filtered by solidsOnly.
+        /// </summary>
+        public static IEnumerable<CelestialBody> GetBodiesUnderNode(CelestialBody node, bool solidsOnly = false, bool noBarycenter = true, bool noPrimary = true)
+        {
+            if (node == null) yield break;
+
+            // Planetary barycenter aggregation
+            if (IsPlanetaryBarycenter(node))
+            {
+                var primary = GetBarycenterPrimary(node);
+                var secondary = GetBarycenterSecondary(node);
+
+                if (!noBarycenter && !solidsOnly) yield return node;
+                if (!noPrimary && primary != null && (!solidsOnly || IsSolid(primary))) yield return primary;
+                if (secondary != null && (!solidsOnly || IsSolid(secondary))) yield return secondary;
+
+                foreach (var m in GetBarycenterMoons(node, solidsOnly)) yield return m;
+                foreach (var m in GetPrimaryMoons(node, solidsOnly)) yield return m;
+                foreach (var m in GetSecondaryMoons(node, solidsOnly)) yield return m;
+                yield break;
+            }
+
+            // Regular planet aggregation
+            if (IsPlanet(node))
+            {
+                if (!noPrimary && (!solidsOnly || IsSolid(node))) yield return node;
+                foreach (var m in GetDirectMoons(node, solidsOnly)) yield return m;
+                yield break;
+            }
+
+            yield break;
+        }
+
+        private static bool IsNotHomeWorld(CelestialBody body, CelestialBody home)
+        {
+            return body != home && !home.orbitingBodies.Contains(body) && !body.orbitingBodies.Contains(home);
+        }
+
+        public static IEnumerable<CelestialBody> GetSolidBodies(bool allowHomeMoons = false)
+        {
+            CelestialBody sun = FlightGlobals.Bodies[0];
+            CelestialBody home = FlightGlobals.Bodies.Single(cb => cb.isHomeWorld);
+
+            var roots = GetSystemRoots(sun).ToList();
+            foreach (var root in roots)
+            {
+                foreach (var node in GetPlanetsUnderRoot(root)
+                         .Where(cb => allowHomeMoons ? cb != home : IsNotHomeWorld(cb, home)))
+                {
+                    foreach (var body in GetBodiesUnderNode(node, solidsOnly: true, noPrimary: false))
+                        yield return body;
+                }
             }
         }
 
@@ -278,10 +490,11 @@ namespace ReStrategia
 
             if (id == "PlanetaryProgram")
             {
+                // all terrestrial planets (standalones + barycenters w/ terrestrial primary)
                 foreach (var root in roots)
                 {
                     foreach (var body in GetTerrestrialPlanetsUnderRoot(root)
-                             .Where(cb => cb != home && !cb.orbitingBodies.Contains(home)))
+                         .Where(cb => IsNotHomeWorld(cb, home)))
                     {
                         bag.Add(body);
                     }
@@ -289,28 +502,29 @@ namespace ReStrategia
             }
             else if (id == "GasGiantProgram")
             {
+                // all gas giants with many solid moons (+ barycenters w/ gas giant primary)
                 foreach (var root in roots)
                 {
                     foreach (var body in GetGasGiantPlanetsUnderRoot(root)
-                             .Where(cb => cb != home && !cb.orbitingBodies.Contains(home)))
+                         .Where(cb => IsNotHomeWorld(cb, home)))
                     {
-                        bag.Add(body);
+                        // check moon count
+                        var moons = GetBodiesUnderNode(body, solidsOnly: true).ToList();
+                        if (moons.Count >= 1) // at least 1 moon
+                            bag.Add(body);
                     }
                 }
             }
             else if (id == "ImpactorProbes")
             {
+                // all solid bodies (planets, moons, barycenter components, etc.)
                 foreach (var root in roots)
                 {
-                    foreach (var planet in GetPlanetsUnderRoot(root)
-                             .Where(cb => cb != home))
+                    foreach (var node in GetPlanetsUnderRoot(root)
+                         .Where(cb => cb != home)) // allow home moons
                     {
-                        // Add if terrestrial
-                        if (BodyType(planet) == CelestialBodyType.TERRESTRIAL) bag.Add(planet);
-
-                        // Add solid-surface moons regardless of planet
-                        foreach (var moon in GetSolidMoons(planet))
-                            bag.Add(moon);
+                        foreach (var body in GetBodiesUnderNode(node, solidsOnly: true, noPrimary: false))
+                            bag.Add(body);
                     }
                 }
             }
@@ -320,7 +534,7 @@ namespace ReStrategia
                 foreach (var root in roots)
                 {
                     foreach (var body in GetPlanetsUnderRoot(root)
-                             .Where(cb => cb != home && !cb.orbitingBodies.Contains(home)))
+                         .Where(cb => IsNotHomeWorld(cb, home)))
                     {
                         bag.Add(body);
                     }
@@ -335,6 +549,7 @@ namespace ReStrategia
             if (!loggedIDs.ContainsKey(id))
             {
                 loggedIDs.Add(id, true);
+                UnityEngine.Debug.Log("[ReStrategia] Logging ID: " + id);
                 foreach (var b in bag)
                     UnityEngine.Debug.Log("[ReStrategia] \"" + b.name + "\"");
             }
