@@ -217,6 +217,11 @@ namespace ReStrategia
         public static bool loggedRoots = false;
         public static Dictionary<string, bool> loggedIDs = new Dictionary<string, bool>();
 
+        public static IEnumerable<CelestialBody> GetDistinctBodiesForStrategy(string id)
+        {
+            return GetBodiesForStrategy(id).Distinct();
+        }
+
         public static IEnumerable<CelestialBody> GetBodiesForStrategy(string id)
         {
             CelestialBody sun = FlightGlobals.Bodies[0];

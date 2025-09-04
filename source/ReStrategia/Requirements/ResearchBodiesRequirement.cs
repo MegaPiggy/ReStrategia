@@ -28,7 +28,7 @@ namespace ReStrategia
             id = ConfigNodeUtil.ParseValue<string>(node, "id", "");
             if (!string.IsNullOrEmpty(id))
             {
-                bodies = CelestialBodyUtil.GetBodiesForStrategy(id);
+                bodies = CelestialBodyUtil.GetDistinctBodiesForStrategy(id);
             }
             else if (node.HasValue("body"))
             {

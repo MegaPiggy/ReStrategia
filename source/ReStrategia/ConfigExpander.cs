@@ -57,7 +57,7 @@ namespace ReStrategia
             {
                 ConfigNode node = config.config;
                 Debug.Log("[ReStrategia] Expanding " + node.GetValue("id"));
-                foreach (CelestialBody body in CelestialBodyUtil.GetBodiesForStrategy(node.GetValue("id")))
+                foreach (CelestialBody body in CelestialBodyUtil.GetDistinctBodiesForStrategy(node.GetValue("id")))
                 {
                     // Duplicate the node
                     ConfigNode newStrategy = ExpandNode(node, body);

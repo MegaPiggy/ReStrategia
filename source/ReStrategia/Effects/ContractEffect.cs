@@ -100,7 +100,7 @@ namespace ReStrategia
         {
             contractType = ConfigNodeUtil.ParseValue<string>(node, "contractType");
             targetBody = ConfigNodeUtil.ParseValue<CelestialBody>(node, "targetBody", FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).First());
-            bodies = ConfigNodeUtil.ParseValue<List<CelestialBody>>(node, "bodies", CelestialBodyUtil.GetBodiesForStrategy(Parent.Config.Name).ToList());
+            bodies = ConfigNodeUtil.ParseValue<List<CelestialBody>>(node, "bodies", CelestialBodyUtil.GetDistinctBodiesForStrategy(Parent.Config.Name).ToList());
             rewardFunds = ConfigNodeUtil.ParseValue<double>(node, "rewardFunds", 0.0);
             rewardScience = ConfigNodeUtil.ParseValue<float>(node, "rewardScience", 0.0f);
             rewardReputation = ConfigNodeUtil.ParseValue<float>(node, "rewardReputation", 0.0f);
