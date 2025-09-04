@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Copyright>Copyright ©  2015</Copyright>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <NoWarn>MSB3270</NoWarn>
+    <DebugType>portable</DebugType>
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <RootDir>$(SolutionDir)..\</RootDir>
+    <GameDataPath>$(RootDir)GameData\$(MSBuildProjectName)\</GameDataPath>
+    <AssetsPath>$(RootDir)assets\</AssetsPath>
+    <OutputPath>$(GameDataPath)</OutputPath>
+    <KSP>S:\SteamLibrary\steamapps\common\Kerbal Space Program\</KSP>
+    <KSPGameDataPath>$(KSP)\GameData\$(MSBuildProjectName)\</KSPGameDataPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ContractConfigurator, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(KSP)\GameData\ContractConfigurator\ContractConfigurator.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CustomBarnKit">
+      <HintPath>$(KSP)\GameData\CustomBarnKit\CustomBarnKit.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KEX-Wormholes">
+      <HintPath>$(KSP)\GameData\KopernicusExpansion\Plugins\KEX-Wormholes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Kopernicus">
+      <HintPath>$(KSP)\GameData\Kopernicus\Plugins\Kopernicus.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Singularity">
+      <HintPath>$(KSP)\GameData\Singularity\Singularity.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(KSP)\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(AssetsPath)**\*.*">
+      <Link>icons\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+    <None Include="$(RootDir)*.*" />
+    <None Include="$(GameDataPath)\**\*.*" Exclude="$(GameDataPath)\$(TargetFileName);$(GameDataPath)\$(TargetName).pdb" />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /E /H /Y &quot;$(GameDataPath)&quot; &quot;$(KSPGameDataPath)&quot;" />
+  </Target>
+</Project>

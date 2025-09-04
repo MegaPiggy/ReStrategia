@@ -1,4 +1,4 @@
-# Fork's changelog
+# Leosky's changelog
 **Strategia 1.10.1**
 - Updated to match Custom Barn Kit fixes ; administrative building will now have more active strategies per levels depending of the configs.
 - Fixed MaxActiveStrategies not being used everywhere ; it's now possible to activate more than one strategy per levels.

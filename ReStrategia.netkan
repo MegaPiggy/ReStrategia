@@ -1,0 +1,30 @@
+{
+    "spec_version": "v1.16",
+    "identifier": "ReStrategia",
+    "$kref": "#/ckan/github/MegaPiggy/ReStrategia",
+    "name": "ReStrategia",
+    "abstract": "Debugged version of Strategia from jrossignol. A complete rewrite of KSP's strategy system.",
+    "license": "MIT",
+    "release_status": "stable",
+    "author": "nightingale, MegaPiggy",
+    "$vref": "#/ckan/ksp-avc",
+    "depends": [
+        { "name": "CustomBarnKit" },
+        { "name": "ContractConfigurator" },
+        { "name": "ModuleManager" }
+    ],
+    "install": [
+        {
+            "find": "ReStrategia",
+            "install_to": "GameData"
+        }
+    ],
+    "resources": {
+        "homepage": "https://github.com/MegaPiggy/ReStrategia",
+        "bugtracker": "https://github.com/MegaPiggy/ReStrategia/issues",
+        "license": "https://raw.githubusercontent.com/MegaPiggy/ReStrategia/master/LICENSE.txt"
+    },
+    "conflicts": [
+        { "name": "Strategia" }
+    ]
+}
