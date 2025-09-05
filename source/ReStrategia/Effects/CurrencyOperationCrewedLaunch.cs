@@ -60,7 +60,7 @@ namespace ReStrategia
         protected override void OnUnregister()
         {
             GameEvents.Modifiers.OnCurrencyModifierQuery.Remove(new EventData<CurrencyModifierQuery>.OnEvent(OnEffectQuery));
-            GameEvents.OnVesselRollout.Add(new EventData<ShipConstruct>.OnEvent(OnVesselRollout));
+            GameEvents.OnVesselRollout.Remove(new EventData<ShipConstruct>.OnEvent(OnVesselRollout));
         }
 
         private void OnVesselRollout(ShipConstruct ship)

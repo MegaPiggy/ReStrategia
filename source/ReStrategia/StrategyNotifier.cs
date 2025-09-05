@@ -28,6 +28,11 @@ namespace ReStrategia
             //GameEvents.onFacilityContextMenuSpawn.Add(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
         }
 
+        void OnDestroy()
+        {
+            //GameEvents.onFacilityContextMenuSpawn.Remove(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
+        }
+
         IEnumerator<YieldInstruction> CheckStrategyState()
         {
             float timeStep = 0.01f;

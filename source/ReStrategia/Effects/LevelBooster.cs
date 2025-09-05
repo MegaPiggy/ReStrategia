@@ -56,7 +56,7 @@ namespace ReStrategia
         {
             GameEvents.onVesselChange.Remove(new EventData<Vessel>.OnEvent(OnVesselChange));
             GameEvents.onFlightReady.Remove(new EventVoid.OnEvent(OnFlightReady));
-            GameEvents.onKerbalLevelUp.Add(new EventData<ProtoCrewMember>.OnEvent(OnKerbalLevelUp));
+            GameEvents.onKerbalLevelUp.Remove(new EventData<ProtoCrewMember>.OnEvent(OnKerbalLevelUp));
         }
 
         private void OnFlightReady()
