@@ -295,7 +295,7 @@ namespace ReStrategia
                 {
                     if (invert)
                     {
-                        unmetReason = $"{vessel.vesselName} is en route to {cbs.Body.CleanDisplayName(true)}";
+                        unmetReason = $"{vessel.vesselName} is en route to {cbs.Body.CleanDisplayName(true)}"; // TODO: change so it doesn't get the name of sigma barycenters
                     }
                     return true;
                 }
