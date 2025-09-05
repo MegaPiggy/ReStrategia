@@ -10,6 +10,7 @@ using Strategies;
 using Strategies.Effects;
 using ContractConfigurator.Util;
 using ContractConfigurator;
+using Random = UnityEngine.Random;
 
 namespace ReStrategia
 {
@@ -18,8 +19,6 @@ namespace ReStrategia
     /// </summary>
     public class CurrencyOperationRandomized : StrategyEffect
     {
-        static System.Random random = new System.Random();
-
         List<Currency> currencies;
         string effectDescription;
         List<TransactionReasons> affectReasons;
@@ -171,16 +170,14 @@ namespace ReStrategia
             });
 
             // Get the multiplier
-            float multiplier = 0.0f;
             if (!valueCache.ContainsKey(hash))
             {
                 float lowerValue = Parent.GetLeveledListItem(lowerValues);
                 float upperValue = Parent.GetLeveledListItem(upperValues);
 
-                multiplier = (float)(random.NextDouble() * (upperValue - lowerValue) + lowerValue);
-                valueCache[hash] = multiplier;
+                valueCache[hash] = Random.value * (upperValue - lowerValue) + lowerValue;
             }
-            multiplier = valueCache[hash];
+            float multiplier = valueCache[hash];
 
             foreach (Currency currency in currencies)
             {
