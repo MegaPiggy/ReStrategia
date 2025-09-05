@@ -33,7 +33,7 @@
     "conflicts": [
         { "name": "Strategia" }
     ],
-    "suggests": {
+    "suggests": [
         { "name": "ProbesBeforeCrew" }
-    }
+    ]
 }
