@@ -28,6 +28,11 @@ namespace ReStrategia
     public class MoonProgram12 : MoonProgram { }
     public class MoonProgram13 : MoonProgram { }
     public class MoonProgram14 : MoonProgram { }
+    public class MoonProgram15 : MoonProgram { }
+    public class MoonProgram16 : MoonProgram { }
+    public class MoonProgram17 : MoonProgram { }
+    public class MoonProgram18 : MoonProgram { }
+    public class MoonProgram19 : MoonProgram { }
 
     public abstract class PlanetaryProgram : StrategiaStrategy { }
     public class PlanetaryProgram0 : PlanetaryProgram { }
