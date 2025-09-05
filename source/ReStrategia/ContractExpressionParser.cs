@@ -44,13 +44,15 @@ namespace ReStrategia
             RegisterMethod(new Method<StrategiaStrategy, double>("failureFunds", s => ContractEffectField(s, ce => ce.failureFunds)));
             RegisterMethod(new Method<StrategiaStrategy, float>("failureReputation", s => ContractEffectField(s, ce => ce.failureReputation)));
 
-            RegisterGlobalFunction(new Function<List<StrategiaStrategy>>("ActiveStrategies", () => StrategySystem.Instance != null ?
-                StrategySystem.Instance.Strategies.OfType<StrategiaStrategy>().Where(s => s.IsActive).ToList() : new List<StrategiaStrategy>(), false));
+            RegisterGlobalFunction(new Function<List<StrategiaStrategy>>("ActiveStrategies", GetActiveStrategies, false));
         }
 
         public ContractExpressionParser()
         {
         }
+
+        public static List<StrategiaStrategy> GetActiveStrategies() => StrategySystem.Instance != null ?
+                StrategySystem.Instance.Strategies.OfType<ReStrategia.StrategiaStrategy>().Where(s => s.IsActive).ToList() : new List<StrategiaStrategy>();
 
         private static T ContractEffectField<T>(StrategiaStrategy strategy, Func<ContractEffect, T> func)
         {

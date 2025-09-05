@@ -8,6 +8,7 @@ using KSP;
 using KSP.UI.Screens;
 using Strategies;
 using ContractConfigurator;
+using KSP.Localization;
 
 namespace ReStrategia
 {
@@ -24,13 +25,12 @@ namespace ReStrategia
         void Start()
         {
             StartCoroutine(CheckStrategyState());
-            //Leosky : This was erasing Custom Barn modifications
-            //GameEvents.onFacilityContextMenuSpawn.Add(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
+            GameEvents.onFacilityContextMenuSpawn.Add(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
         }
 
         void OnDestroy()
         {
-            //GameEvents.onFacilityContextMenuSpawn.Remove(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
+            GameEvents.onFacilityContextMenuSpawn.Remove(new EventData<KSCFacilityContextMenu>.OnEvent(OnFacilityContextMenuSpawn));
         }
 
         IEnumerator<YieldInstruction> CheckStrategyState()
@@ -209,8 +209,7 @@ namespace ReStrategia
             }
         }
 
-        //Leosky : Outdated from a past version of Custom Barn ?
-        /*static FieldInfo facilityName = typeof(KSCFacilityContextMenu).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(fi => fi.Name == "facilityName").First();
+        static FieldInfo facilityName = typeof(KSCFacilityContextMenu).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(fi => fi.Name == "facilityName").First();
         void OnFacilityContextMenuSpawn(KSCFacilityContextMenu menu)
         {
             string name = (string)facilityName.GetValue(menu);
@@ -225,8 +224,16 @@ namespace ReStrategia
             int currentLevel = (int)Math.Round(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.Administration) *
                 ScenarioUpgradeableFacilities.GetFacilityLevelCount(SpaceCenterFacility.Administration)) + 1;
 
+            // Display as one strategy lower (matching the level coincidentally) so that if we are at max strategies, we can only allow activation if it would be an upgrade
             string currentLevelText = StringBuilderCache.Format("* Max Active Strategies: {0}", currentLevel);
-            string nextLevelText = StringBuilderCache.Format("<color=#a8ff04>* Max Active Strategies: {0}</color>", currentLevel+1);
+            string nextLevelText = string.Concat(new string[]
+                {
+                    "<color=",
+                    XKCDColors.HexFormat.ElectricLime,
+                    ">",
+                    StringBuilderCache.Format("* Max Active Strategies: {0}", currentLevel+1),
+                    "</color>"
+                });
 
             while (true)
             {
@@ -235,10 +242,13 @@ namespace ReStrategia
                     yield break;
                 }
 
-                menu.levelStatsText.text = menu.levelStatsText.text.StartsWith("<color") ? nextLevelText : currentLevelText;
+                var fixedText = menu.levelStatsText.text.StartsWith("<color") ? nextLevelText : currentLevelText;
+
+                Debug.Log("Changing text from \"" + menu.levelStatsText.text + "\" to \"" + fixedText + "\"");
+                menu.levelStatsText.text = fixedText;
 
                 yield return null;
             }
-        }*/
+        }
     }
 }

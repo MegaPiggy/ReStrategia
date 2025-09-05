@@ -299,7 +299,8 @@ namespace ReStrategia
 
             // If we are at max strategies, only allow activation if it would be an upgrade
             IEnumerable<Strategy> activeStrategies = StrategySystem.Instance.Strategies.Where(s => s.IsActive);
-            if (activeStrategies.Count() >= Administration.Instance.MaxActiveStrategies)
+            int limit = Administration.Instance.MaxActiveStrategies - 1;
+            if (activeStrategies.Count() >= limit)
             {
                 UpgradeableStrategy upgradeable = this as UpgradeableStrategy;
                 if (upgradeable != null && activeStrategies.OfType<UpgradeableStrategy>().Any(s => s.Name == upgradeable.Name))
@@ -308,7 +309,7 @@ namespace ReStrategia
                 }
                 else
                 {
-                    reason = "The Administration Building cannot support more than " + Administration.Instance.MaxActiveStrategies + " active strategies at this level.";
+                    reason = "The Administration Building cannot support more than " + limit + " active strategies at this level.";
                     return false;
                 }
             }
@@ -399,5 +400,7 @@ namespace ReStrategia
                 }
             }
         }
+
+        public override string ToString() => Config.Title;
     }
 }

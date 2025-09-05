@@ -12,6 +12,7 @@ using Strategies;
 using ContractConfigurator;
 using ContractConfigurator.Util;
 using CustomBarnKit;
+using KSP.Localization;
 
 namespace ReStrategia
 {
@@ -53,16 +54,16 @@ namespace ReStrategia
                     rect.sizeDelta = new Vector2(size, rect.sizeDelta.y);
                 }
 
-                /*
                 // Clean up the strategy max text
                 LoggingUtil.LogDebug(this, "Cleaning up strategy max text...");
                 Transform stratCountTransform = KSP.UI.Screens.Administration.Instance.transform.FindDeepChild("ActiveStratCount");
                 TextMeshProUGUI stratCountText = stratCountTransform.GetComponent<TextMeshProUGUI>();
+                // Display as one strategy lower so that if we are at max strategies, we can only allow activation if it would be an upgrade
                 int limit = Administration.Instance.MaxActiveStrategies - 1;
                 if (!stratCountText.text.Contains("Max: " + limit))
                 {
-                    stratCountText.text = "Active Strategies: " + Administration.Instance.ActiveStrategyCount + " [Max: " + limit + "]";
-                }*/
+                    stratCountText.text = "Active Strategies: " + Administration.Instance.ActiveStrategyCount + " [Max: " + limit + "]"; // Localizer.Format("#autoLOC_439627", Administration.Instance.ActiveStrategyCount, limit);
+                }
 
                 // Replace department avatars with images when necessary
                 LoggingUtil.LogDebug(this, "Performing department image replacement...");
