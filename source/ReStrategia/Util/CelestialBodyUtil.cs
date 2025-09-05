@@ -396,7 +396,7 @@ namespace ReStrategia
         /// - If node is a planetary barycenter: returns primary (if noPrimary is false), secondary,
         ///   plus moons of (barycenter, primary, secondary), filtered by solidsOnly.
         /// </summary>
-        public static IEnumerable<CelestialBody> GetBodiesUnderNode(CelestialBody node, bool solidsOnly = false, bool noBarycenter = true, bool noPrimary = true)
+        public static IEnumerable<CelestialBody> GetBodiesUnderNode(this CelestialBody node, bool solidsOnly = false, bool noBarycenter = true, bool noPrimary = true)
         {
             if (node == null) yield break;
 
@@ -580,7 +580,7 @@ namespace ReStrategia
                 yield return b;
         }
 
-        public static string BodyList(IEnumerable<CelestialBody> bodies, string conjunction)
+        public static string BodyList(this IEnumerable<CelestialBody> bodies, string conjunction)
         {
             if (!bodies.Any()) return string.Empty;
             CelestialBody first = bodies.First();
@@ -597,5 +597,27 @@ namespace ReStrategia
             return result;
         }
 
+        public static CelestialBody GetPrimaryBody(this CelestialBody body)
+        {
+            if (body == null) return null;
+            return CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.GetBarycenterPrimary(body) : body;
+        }
+
+        public static CelestialBody GetDisplayBody(this CelestialBody body)
+        {
+            if (body == null) return null;
+            return CelestialBodyUtil.IsSigmaBinary(body) ? CelestialBodyUtil.GetBarycenterPrimary(body) : body;
+        }
+
+        public static string GetCulledName(this CelestialBody displayBody)
+        {
+            return CelestialBodyUtil.IsBarycenter(displayBody) ? displayBody.CleanDisplayName() : displayBody.name;
+        }
+
+        public static string GetPrimaryAndSecondaryList(this CelestialBody body, string conjunction)
+        {
+            if (body == null) return string.Empty;
+            return CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBarycenterPrimaryAndSecondary(body), conjunction) : body.CleanDisplayName();
+        }
     }
 }

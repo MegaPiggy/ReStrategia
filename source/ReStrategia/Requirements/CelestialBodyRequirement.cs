@@ -54,7 +54,7 @@ namespace ReStrategia
                 {
                     if (DefaultInvertedUnmetReason && invert && string.IsNullOrEmpty(unmetReason))
                     {
-                        unmetReason = $"Have {Verbed()} {node.Body.name}";
+                        unmetReason = $"Have {Verbed()} {node.Body.GetDisplayBody().CleanDisplayName(true)}";
                     }
                     return invert ? false : true;
                 }
@@ -62,7 +62,7 @@ namespace ReStrategia
 
             if (DefaultUnmetReason && !invert && string.IsNullOrEmpty(unmetReason))
             {
-                unmetReason = $"Haven't {Verbed()} {CelestialBodyUtil.BodyList(bodies, "or")}";
+                unmetReason = $"Haven't {Verbed()} {CelestialBodyUtil.BodyList(bodies.Where(CelestialBodyUtil.IsNotBarycenter), "or")}";
             }
             return invert;
         }
@@ -295,7 +295,7 @@ namespace ReStrategia
                 {
                     if (invert)
                     {
-                        unmetReason = $"{vessel.vesselName} is en route to {cbs.Body.CleanDisplayName(true)}"; // TODO: change so it doesn't get the name of sigma barycenters
+                        unmetReason = $"{vessel.vesselName} is en route to {cbs.Body.GetDisplayBody().CleanDisplayName(true)}";
                     }
                     return true;
                 }
@@ -304,7 +304,7 @@ namespace ReStrategia
             if (!invert)
             {
                 string mannedStr = MannedString;
-                unmetReason = $"No {mannedStr}vessels are en route to {cbs.Body.CleanDisplayName(true)}";
+                unmetReason = $"No {mannedStr}vessels are en route to {cbs.Body.GetDisplayBody().CleanDisplayName(true)}";
             }
             return false;
         }

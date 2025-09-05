@@ -265,15 +265,15 @@ namespace ReStrategia
 
         public string FormatBodyString(string input, CelestialBody body)
         {
-            CelestialBody displayBody  = CelestialBodyUtil.IsSigmaBinary(body) ? CelestialBodyUtil.GetBarycenterPrimary(body) : body;
-            CelestialBody primary = CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.GetBarycenterPrimary(body) : body;
+            CelestialBody displayBody  = body.GetDisplayBody();
+            CelestialBody primary = body.GetPrimaryBody();
             string result = input.
                 Replace("$body", displayBody.name).
-                Replace("$culledName", CelestialBodyUtil.IsBarycenter(displayBody) ? displayBody.CleanDisplayName() : displayBody.name).
+                Replace("$culledName", displayBody.GetCulledName()).
                 Replace("$primaryBody", primary.name).
                 Replace("$theBody", primary.CleanDisplayName()).
-                Replace("$primaryAndSecondary", CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBarycenterPrimaryAndSecondary(body), "and") : primary.CleanDisplayName()).
-                Replace("$primaryOrSecondary", CelestialBodyUtil.IsBarycenter(body) ? CelestialBodyUtil.BodyList(CelestialBodyUtil.GetBarycenterPrimaryAndSecondary(body), "or") : primary.CleanDisplayName());
+                Replace("$primaryAndSecondary", body.GetPrimaryAndSecondaryList("and")).
+                Replace("$primaryOrSecondary", body.GetPrimaryAndSecondaryList("or"));
 
             if (result.Contains("$theBodies"))
             {
