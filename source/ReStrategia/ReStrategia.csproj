@@ -93,6 +93,9 @@
     <None Include="$(RootDir)*.*" />
     <None Include="$(GameDataPath)\**\*.*" Exclude="$(GameDataPath)\$(TargetFileName);$(GameDataPath)\$(TargetName).pdb" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /E /H /Y &quot;$(GameDataPath)&quot; &quot;$(KSPGameDataPath)&quot;" />
   </Target>
