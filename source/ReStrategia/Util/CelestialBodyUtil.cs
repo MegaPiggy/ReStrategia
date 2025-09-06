@@ -13,7 +13,7 @@ namespace ReStrategia
 {
     public static class CelestialBodyUtil
     {
-        private enum CelestialBodyType
+        public enum CelestialBodyType
         {
             NOT_APPLICABLE,
             STAR,
@@ -25,7 +25,7 @@ namespace ReStrategia
             WORMHOLE
         }
 
-        private static CelestialBodyType BodyType(CelestialBody cb)
+        public static CelestialBodyType BodyType(CelestialBody cb)
         {
             if (cb == null || IsHidden(cb))
             {
@@ -88,22 +88,22 @@ namespace ReStrategia
             return CelestialBodyType.NOT_APPLICABLE;
         }
 
-        private static bool IsSolid(CelestialBody cb)
+        public static bool IsSolid(CelestialBody cb)
         {
             return cb.pqsController != null && cb.hasSolidSurface && !IsWormhole(cb);
         }
 
-        private static bool IsNotSolid(CelestialBody cb)
+        public static bool IsNotSolid(CelestialBody cb)
         {
             return (cb.pqsController == null || !cb.hasSolidSurface);
         }
 
-        private static bool IsHidden(CelestialBody cb)
+        public static bool IsHidden(CelestialBody cb)
         {
             return Version.VerifyKopernicusVersion() && KopernicusWrapper.IsRnDHidden(cb);
         }
 
-        private static bool IsSingularity(CelestialBody cb)
+        public static bool IsSingularity(CelestialBody cb)
         {
             return Version.VerifySingularityVersion() && SingularityWrapper.IsSingularity(cb);
         }
@@ -131,32 +131,32 @@ namespace ReStrategia
 
         public static bool IsNotBarycenter(CelestialBody cb) => !IsBarycenter(cb);
 
-        private static bool IsWormhole(CelestialBody cb)
+        public static bool IsWormhole(CelestialBody cb)
         {
             return Version.VerifyKopernicusExpansionVersion() && KopernicusExpansionWrapper.IsWormhole(cb);
         }
 
-        private static bool IsStellarObject(CelestialBody cb)
+        public static bool IsStellarObject(CelestialBody cb)
         {
             return BodyType(cb) is CelestialBodyType.STAR or CelestialBodyType.SINGULARITY;
         }
 
-        private static bool IsTerrestrial(CelestialBody cb)
+        public static bool IsTerrestrial(CelestialBody cb)
         {
             return BodyType(cb) is CelestialBodyType.TERRESTRIAL;
         }
 
-        private static bool IsGasGiant(CelestialBody cb)
+        public static bool IsGasGiant(CelestialBody cb)
         {
             return BodyType(cb) is CelestialBodyType.GAS_GIANT;
         }
 
-        private static bool IsPlanet(CelestialBody cb)
+        public static bool IsPlanet(CelestialBody cb)
         {
             return BodyType(cb) is CelestialBodyType.TERRESTRIAL or CelestialBodyType.GAS_GIANT;
         }
 
-        private static bool IsNonStellarBody(CelestialBody child)
+        public static bool IsNonStellarBody(CelestialBody child)
         {
             return BodyType(child) is not CelestialBodyType.NOT_APPLICABLE and not CelestialBodyType.WORMHOLE and not CelestialBodyType.STAR and not CelestialBodyType.SINGULARITY;
         }
@@ -165,7 +165,7 @@ namespace ReStrategia
         /// True if this barycenter is grouping stars/singularities (system-level).
         /// False if it's a planetary barycenter (should be processed with planets).
         /// </summary>
-        private static bool IsStellarBarycenter(CelestialBody cb)
+        public static bool IsStellarBarycenter(CelestialBody cb)
         {
             if (!IsBarycenter(cb)) return false;
 
@@ -173,7 +173,7 @@ namespace ReStrategia
             return cb.orbitingBodies.Any(IsStellarObject);
         }
 
-        private static bool IsPlanetaryBarycenter(CelestialBody cb)
+        public static bool IsPlanetaryBarycenter(CelestialBody cb)
         {
             if (!IsBarycenter(cb)) return false;
 

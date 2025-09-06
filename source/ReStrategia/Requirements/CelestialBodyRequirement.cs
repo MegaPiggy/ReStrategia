@@ -27,7 +27,7 @@ namespace ReStrategia
             id = ConfigNodeUtil.ParseValue<string>(node, "id", "");
             if (!string.IsNullOrEmpty(id))
             {
-                bodies = CelestialBodyUtil.GetDistinctBodiesForStrategy(id).SelectMany(cb => cb.GetBodiesUnderNode(solidsOnly: true, noPrimary: false));
+                bodies = CelestialBodyUtil.GetDistinctBodiesForStrategy(id).SelectMany(cb => CelestialBodyUtil.GetBodiesUnderNode(cb, solidsOnly: false, noBarycenter: false, noPrimary: false));
             }
             else if (node.HasValue("body"))
             {
@@ -37,6 +37,7 @@ namespace ReStrategia
             {
                 bodies = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld);
             }
+            bodies = Filter(bodies);
             invert = ConfigNodeUtil.ParseValue<bool?>(node, "invert", (bool?)false).Value;
         }
 
@@ -67,11 +68,29 @@ namespace ReStrategia
             return invert;
         }
 
+        protected virtual IEnumerable<CelestialBody> Filter(IEnumerable<CelestialBody> bodies)
+        {
+            return bodies;
+        }
+
         protected virtual bool DefaultUnmetReason => false;
         protected virtual bool DefaultInvertedUnmetReason => true;
 
         protected abstract bool Check(CelestialBodySubtree cbs, ref string unmetReason);
         protected abstract string Verbed();
+    }
+
+    public abstract class SolidCelestialBodyRequirement : CelestialBodyRequirement
+    {
+        public SolidCelestialBodyRequirement(Strategy parent)
+            : base(parent)
+        {
+        }
+
+        protected override IEnumerable<CelestialBody> Filter(IEnumerable<CelestialBody> bodies)
+        {
+            return bodies.Where(CelestialBodyUtil.IsNonStellarBody).Where(CelestialBodyUtil.IsSolid);
+        }
     }
 
     public class ReachedBodyRequirement : CelestialBodyRequirement
@@ -110,7 +129,7 @@ namespace ReStrategia
         }
     }
 
-    public class LandedBodyRequirement : CelestialBodyRequirement
+    public class LandedBodyRequirement : SolidCelestialBodyRequirement
     {
         public LandedBodyRequirement(Strategy parent)
             : base(parent)
@@ -146,7 +165,7 @@ namespace ReStrategia
         }
     }
 
-    public class ReturnFromSurfaceRequirement : CelestialBodyRequirement
+    public class ReturnFromSurfaceRequirement : SolidCelestialBodyRequirement
     {
         public ReturnFromSurfaceRequirement(Strategy parent)
             : base(parent)
@@ -200,7 +219,7 @@ namespace ReStrategia
         }
     }
 
-    public class LandedBodyMannedRequirement : CelestialBodyRequirement
+    public class LandedBodyMannedRequirement : SolidCelestialBodyRequirement
     {
         public LandedBodyMannedRequirement(Strategy parent)
             : base(parent)
@@ -236,7 +255,7 @@ namespace ReStrategia
         }
     }
 
-    public class ReturnFromSurfaceMannedRequirement : CelestialBodyRequirement
+    public class ReturnFromSurfaceMannedRequirement : SolidCelestialBodyRequirement
     {
         public ReturnFromSurfaceMannedRequirement(Strategy parent)
             : base(parent)
