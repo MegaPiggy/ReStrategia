@@ -68,10 +68,9 @@ namespace ReStrategia
 
                         // Name must be unique
                         string name = node.GetValue("name");
-                        int current;
-                        names.TryGetValue(name, out current);
+                        names.TryGetValue(name, out int current);
                         names[name] = current + 1;
-                        name = name + current;
+                        name += current;
                         newStrategy.SetValue("name", name);
 
                         // Duplicate effect nodes
