@@ -13,8 +13,6 @@ namespace ReStrategia
 {
     public static class CelestialBodyUtil
     {
-        private const double BARYCENTER_THRESHOLD = 100;
-
         private enum CelestialBodyType
         {
             NOT_APPLICABLE,
@@ -158,6 +156,11 @@ namespace ReStrategia
             return BodyType(cb) is CelestialBodyType.TERRESTRIAL or CelestialBodyType.GAS_GIANT;
         }
 
+        private static bool IsNonStellarBody(CelestialBody child)
+        {
+            return BodyType(child) is not CelestialBodyType.NOT_APPLICABLE and not CelestialBodyType.WORMHOLE and not CelestialBodyType.STAR and not CelestialBodyType.SINGULARITY;
+        }
+
         /// <summary>
         /// True if this barycenter is grouping stars/singularities (system-level).
         /// False if it's a planetary barycenter (should be processed with planets).
@@ -231,80 +234,6 @@ namespace ReStrategia
 
             var comps = GetBarycenterComponents(bary);
             return comps.Count > 1 ? comps[1] : null;
-        }
-
-
-        /// <summary>
-        /// True if the body should be considered a "moon-like" child of parent for strategy lists,
-        /// honoring the solidsOnly filter. Excludes stellar objects and barycenters.
-        /// </summary>
-        private static bool IsMoonLike(CelestialBody child, bool solidsOnly)
-        {
-            if (child == null) return false;
-            if (IsStellarObject(child) || IsBarycenter(child)) return false;
-            if (solidsOnly) return IsSolid(child);
-            // include any non-stellar, non-barycenter (terrestrial or gas giant)
-            return BodyType(child) is not CelestialBodyType.NOT_APPLICABLE and not CelestialBodyType.WORMHOLE;
-        }
-
-        /// <summary> Moons that orbit the given parent directly (filtered). </summary>
-        private static IEnumerable<CelestialBody> GetDirectMoons(CelestialBody parent, bool solidsOnly)
-        {
-            if (parent == null) yield break;
-            foreach (var m in parent.orbitingBodies)
-            {
-                // Normal moon
-                if (IsMoonLike(m, solidsOnly))
-                {
-                    yield return m;
-                }
-                // Special case: barycenter orbiting a planet
-                else if (IsPlanetaryBarycenter(m))
-                {
-                    if (!solidsOnly) yield return m;
-                    // Include barycenter’s primary/secondary
-                    foreach (var body in GetBarycenterPrimaryAndSecondary(m))
-                    {
-                        if (!solidsOnly || IsSolid(body)) yield return body;
-                    }
-                }
-            }
-        }
-
-        /// <summary> Moons of the planetary barycenter itself (exclude its primary/secondary). </summary>
-        private static IEnumerable<CelestialBody> GetBarycenterMoons(CelestialBody bary, bool solidsOnly)
-        {
-            if (bary == null || !IsPlanetaryBarycenter(bary)) yield break;
-
-            var primary = GetBarycenterPrimary(bary);
-            var secondary = GetBarycenterSecondary(bary);
-
-            foreach (var m in bary.orbitingBodies)
-            {
-                if (m == primary || m == secondary) continue;
-                if (IsMoonLike(m, solidsOnly))
-                    yield return m;
-            }
-        }
-
-        /// <summary> Moons of the primary component of a planetary barycenter. </summary>
-        private static IEnumerable<CelestialBody> GetPrimaryMoons(CelestialBody bary, bool solidsOnly)
-        {
-            var primary = GetBarycenterPrimary(bary);
-            var directMoons = GetDirectMoons(primary, solidsOnly);
-            if (IsSigmaBinary(bary))
-            {
-                var secondary = GetBarycenterSecondary(bary);
-                return directMoons.Where(cb => cb != secondary);
-            }
-            return directMoons;
-        }
-
-        /// <summary> Moons of the secondary component of a planetary barycenter. </summary>
-        private static IEnumerable<CelestialBody> GetSecondaryMoons(CelestialBody bary, bool solidsOnly)
-        {
-            var secondary = GetBarycenterSecondary(bary);
-            return GetDirectMoons(secondary, solidsOnly);
         }
 
         public static bool IsSystemRoot(CelestialBody cb)
@@ -395,6 +324,7 @@ namespace ReStrategia
         /// - If node is a regular planet: returns the planet (if noPrimary is false) and its moons (filtered by solidsOnly).
         /// - If node is a planetary barycenter: returns primary (if noPrimary is false), secondary,
         ///   plus moons of (barycenter, primary, secondary), filtered by solidsOnly.
+        /// - Recursive, which means if any of the moons have moons then those will be included if they match the criteria.
         /// </summary>
         public static IEnumerable<CelestialBody> GetBodiesUnderNode(this CelestialBody node, bool solidsOnly = false, bool noBarycenter = true, bool noPrimary = true)
         {
@@ -403,6 +333,7 @@ namespace ReStrategia
             // Planetary barycenter aggregation
             if (IsPlanetaryBarycenter(node))
             {
+                var isSigmaBinary = IsSigmaBinary(node);
                 var primary = GetBarycenterPrimary(node);
                 var secondary = GetBarycenterSecondary(node);
 
@@ -410,32 +341,51 @@ namespace ReStrategia
                 if (!noPrimary && primary != null && (!solidsOnly || IsSolid(primary))) yield return primary;
                 if (secondary != null && (!solidsOnly || IsSolid(secondary))) yield return secondary;
 
-                foreach (var m in GetBarycenterMoons(node, solidsOnly))
+                // Moons of the planetary barycenter itself (exclude its primary/secondary).
+                foreach (var m in node.orbitingBodies)
                 {
-                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
-                    yield return m;
+                    if (m != primary && m != secondary)
+                    {
+                        foreach (var b in GetBodiesUnderNode(m, solidsOnly, noBarycenter, noPrimary: false))
+                            yield return b;
+                    }
                 }
-                foreach (var m in GetPrimaryMoons(node, solidsOnly))
+
+                // Moons of the primary component of a planetary barycenter.
+                if (primary != null)
                 {
-                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
-                    yield return m;
+                    foreach (var m in primary.orbitingBodies)
+                    {
+                        // Sigma binary special case: exclude the secondary, which is already yielded
+                        if (isSigmaBinary && m == secondary) continue;
+
+                        foreach (var b in GetBodiesUnderNode(m, solidsOnly, noBarycenter, noPrimary: false))
+                            yield return b;
+                    }
                 }
-                foreach (var m in GetSecondaryMoons(node, solidsOnly))
+
+                // Moons of the secondary component of a planetary barycenter.
+                if (secondary != null)
                 {
-                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
-                    yield return m;
+                    foreach (var m in secondary.orbitingBodies)
+                    {
+                        foreach (var b in GetBodiesUnderNode(m, solidsOnly, noBarycenter, noPrimary: false))
+                            yield return b;
+                    }
                 }
+
                 yield break;
             }
 
-            // Regular planet aggregation
-            if (IsPlanet(node))
+            // Regular aggregation
+            if (IsNonStellarBody(node))
             {
                 if (!noPrimary && (!solidsOnly || IsSolid(node))) yield return node;
-                foreach (var m in GetDirectMoons(node, solidsOnly))
+
+                foreach (var m in node.orbitingBodies)
                 {
-                    if ((noBarycenter || solidsOnly) && IsBarycenter(m)) continue;
-                    yield return m;
+                    foreach (var b in GetBodiesUnderNode(m, solidsOnly, noBarycenter, noPrimary: false))
+                        yield return b;
                 }
                 yield break;
             }
