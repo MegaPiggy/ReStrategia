@@ -1,7 +1,22 @@
-# Leosky's changelog
-**Strategia 1.10.1**
-- Updated to match Custom Barn Kit fixes ; administrative building will now have more active strategies per levels depending of the configs.
-- Fixed MaxActiveStrategies not being used everywhere ; it's now possible to activate more than one strategy per levels.
+# ReStrategia changelog
+**ReStrategia 2.0.0**
+- Added new Kerbin Programs.
+- Support for arbitrary homeworlds.
+- Changed some requirements to allow probe missions first before a crewed mission to a Gas Giant system.
+- Changed the way the programs are created
+  - Revamped body classification (stars, barycenters, etc.)
+  - Interstellar systems are no longer marked as Gas Giant programs and instead their planets are interpreted the same as Kerbol's planets.
+  - Barycenters now have special handling.
+  - Added recursion to detect moons of moons.
+  - Hidden bodies are now ignored
+- Added more custom program names (Caelus, Poseidon, Mercury, Muna, Stayputnik, etc)
+- Greatly increased limits of planetary programs (meaning strategies won't break when you have a ton of mods).
+- Upgraded Roman numeral converter (now goes past 25).
+- Various other small bug fixes and code clean-ups.
+
+# StrategiaContinued changelog
+**StrategiaContinued 1.10.1**
+- Fixed MaxActiveStrategies not being used everywhere.
 - Updated to .NET Framework 4.7.2
 
 # Original changelog
