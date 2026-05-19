@@ -135,7 +135,7 @@ namespace ReStrategia
         /// <returns>Whether the check passed.</returns>
         public static bool VerifyKopernicusVersion()
         {
-            string minVersion = "1.12.227";
+            string minVersion = "1.0.227";
             if (KopernicusAssembly == null || !KopernicusCheckDone)
             {
                 KopernicusAssembly = Version.VerifyAssemblyVersion("Kopernicus", minVersion);
