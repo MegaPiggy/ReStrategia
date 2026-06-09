@@ -6,6 +6,8 @@ ReStrategia is a Kerbal Space Program (KSP) mod that extends and continues the o
 
 ReStrategia is a revamp to Kerbal Space Program's strategy system. All the stock strategies are removed, and replaced with new and unique strategies.
 
+![Administration](assets/Administration.png)
+
 ## Special Mission Strategies
 
 The first set of strategies are special mission strategies. These strategies will give you advance cash and bonuses to certain milestones for completing a high level objective as part of your space program. They are dynamic, so they will work with mods that change the stock solar system by adding or changing celestial bodies.  Be warned though - if you cancel one of these strategies without completing the objective, you will face a heavy penalty!
