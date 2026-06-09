@@ -1,8 +1,8 @@
 {
      "NAME":"ReStrategia",
-     "URL":"https://raw.githubusercontent.com/MegaPiggy/ReStrategia/master/GameData/ReStrategia/ReStrategia.version",
+     "URL":"https://raw.githubusercontent.com/MegaPiggy/ReStrategia/main/GameData/ReStrategia/ReStrategia.version",
      "DOWNLOAD":"https://github.com/MegaPiggy/ReStrategia/releases",
-     "CHANGE_LOG_URL":"https://raw.githubusercontent.com/MegaPiggy/ReStrategia/master/CHANGES.txt",
+     "CHANGE_LOG_URL":"https://raw.githubusercontent.com/MegaPiggy/ReStrategia/main/CHANGES.txt",
      "GITHUB":{
          "USERNAME":"MegaPiggy",
          "REPOSITORY":"ReStrategia",
