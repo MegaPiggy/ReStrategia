@@ -436,30 +436,26 @@ namespace ReStrategia
                 );
             }
 
+            var bag = new HashSet<CelestialBody>();
+
             if (id == "KerbinProgram")
             {
-                yield return home;
-                yield break;
+                bag.Add(home);
             }
             else if (id == "MoonProgram")
             {
                 // Moons of home
                 foreach (CelestialBody child in home.orbitingBodies)
-                    yield return child;
+                    bag.Add(child);
 
                 // Special case for mods where Kerbin is a Gas Giant's moon
                 if (!IsStellarObject(home.referenceBody))
                 {
                     foreach (CelestialBody child in home.referenceBody.orbitingBodies.Where(cb => cb != home))
-                        yield return child;
+                        bag.Add(child);
                 }
-                yield break;
             }
-
-            // Build a de-duped bag for everything else.
-            var bag = new HashSet<CelestialBody>();
-
-            if (id == "PlanetaryProgram")
+            else if(id == "PlanetaryProgram")
             {
                 // all terrestrial planets (standalones + barycenters w/ terrestrial primary)
                 foreach (var root in roots)
@@ -524,6 +520,7 @@ namespace ReStrategia
                     "Logging ID: " + id + " [" + string.Join(", ", bag.Select(b => $"\"{b.name}\"")) + "]"
                 );
             }
+
             foreach (var b in bag)
                 yield return b;
         }
