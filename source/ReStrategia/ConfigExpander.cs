@@ -6,7 +6,6 @@ using System.Text;
 using UnityEngine;
 using KSP;
 using ContractConfigurator;
-using Kopernicus.Configuration;
 
 namespace ReStrategia
 {

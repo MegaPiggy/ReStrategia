@@ -5,8 +5,6 @@ using System.Text;
 using UnityEngine;
 using KSP;
 using ContractConfigurator;
-using Kopernicus.Configuration;
-using Kopernicus.UI;
 using Expansions.Missions;
 
 namespace ReStrategia
