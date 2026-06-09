@@ -14,7 +14,7 @@
     <GameDataPath>$(RootDir)GameData\$(MSBuildProjectName)\</GameDataPath>
     <AssetsPath>$(RootDir)assets\</AssetsPath>
     <OutputPath>$(GameDataPath)</OutputPath>
-    <KSP>S:\SteamLibrary\steamapps\common\Kerbal Space Program\</KSP>
+    <KSP>C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program</KSP>
     <KSPGameDataPath>$(KSP)\GameData\$(MSBuildProjectName)\</KSPGameDataPath>
   </PropertyGroup>
   <ItemGroup>
