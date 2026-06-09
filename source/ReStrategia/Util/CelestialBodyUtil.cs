@@ -431,9 +431,9 @@ namespace ReStrategia
             if (!loggedRoots)
             {
                 loggedRoots = true;
-                UnityEngine.Debug.Log("[ReStrategia] System Roots");
-                foreach (CelestialBody child in roots)
-                    UnityEngine.Debug.Log("[ReStrategia] \"" + child.name + "\"");
+                LogUtil.LogDebug(
+                    "System Roots: " + string.Join(", ", roots.Select(body => $"\"{body.name}\""))
+                );
             }
 
             if (id == "KerbinProgram")
@@ -520,9 +520,9 @@ namespace ReStrategia
             if (!loggedIDs.ContainsKey(id))
             {
                 loggedIDs.Add(id, true);
-                UnityEngine.Debug.Log("[ReStrategia] Logging ID: " + id);
-                foreach (var b in bag)
-                    UnityEngine.Debug.Log("[ReStrategia] \"" + b.name + "\"");
+                LogUtil.LogDebug(
+                    "Logging ID: " + id + " [" + string.Join(", ", bag.Select(b => $"\"{b.name}\"")) + "]"
+                );
             }
             foreach (var b in bag)
                 yield return b;

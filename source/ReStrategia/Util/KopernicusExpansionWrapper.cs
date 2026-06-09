@@ -16,7 +16,7 @@ namespace ReStrategia
         {
             try
             {
-                Debug.Log(typeof(WormholeComponent).Name);
+                var wormhole = typeof(WormholeComponent).Name;
                 APIReady = true;
             }
             catch

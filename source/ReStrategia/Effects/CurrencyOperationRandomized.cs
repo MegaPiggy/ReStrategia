@@ -49,7 +49,7 @@ namespace ReStrategia
 
         protected override void OnLoadFromConfig(ConfigNode node)
         {
-            Debug.Log("CurrencyOperationRandomized.OnLoadFromConfig");
+            LogUtil.LogInfo("CurrencyOperationRandomized.OnLoadFromConfig");
             base.OnLoadFromConfig(node);
 
             currencies = ConfigNodeUtil.ParseValue<List<Currency>>(node, "currency");
@@ -61,7 +61,7 @@ namespace ReStrategia
 
         protected override void OnSave(ConfigNode node)
         {
-            Debug.Log("CurrencyOperationRandomized.OnSave");
+            LogUtil.LogInfo("CurrencyOperationRandomized.OnSave");
             base.OnSave(node);
 
             ConfigNode values = new ConfigNode("VALUES");
@@ -71,7 +71,7 @@ namespace ReStrategia
 
         protected override void OnLoad(ConfigNode node)
         {
-            Debug.Log("CurrencyOperationRandomized.OnLoad");
+            LogUtil.LogInfo("CurrencyOperationRandomized.OnLoad");
             base.OnLoad(node);
 
             initialSetupDone = true;
@@ -89,7 +89,7 @@ namespace ReStrategia
                 if (!initialSetupDone)
                 {
                     initialSetupDone = true;
-                    Debug.Log("Contract Slot Machine: initial setup");
+                    LogUtil.LogInfo("Contract Slot Machine: initial setup");
 
                     // Initialize the value cache to all zeros
                     OnContractChange(null);
@@ -119,7 +119,7 @@ namespace ReStrategia
                 IEnumerable<CurrencyOperationRandomized> activeEffects = StrategySystem.Instance.Strategies.Where(s => s.IsActive && s != Parent).SelectMany(s => s.Effects).OfType<CurrencyOperationRandomized>();
                 if (activeEffects.Any())
                 {
-                    Debug.Log("Contract Slot Machine: apply upgrade/downgrade");
+                    LogUtil.LogInfo("Contract Slot Machine: apply upgrade/downgrade");
 
                     // Found another active effect, should only be one
                     CurrencyOperationRandomized otherEffect = activeEffects.First();

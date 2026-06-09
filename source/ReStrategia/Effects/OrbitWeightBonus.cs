@@ -97,7 +97,7 @@ namespace ReStrategia
 
         private void HandleVessel(Vessel vessel)
         {
-            Debug.Log("[ReStrategia] OrbitWeightBonus.HandleVessel");
+            LogUtil.LogInfo("OrbitWeightBonus.HandleVessel");
 
             // Check weight limit
             if (vessel.totalMass < mass)

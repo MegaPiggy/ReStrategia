@@ -41,7 +41,7 @@ namespace ReStrategia
             if (ticks++ == 0)
             {
                 // Resize the root element that handles the width
-                LoggingUtil.LogDebug(this, "Modifying width of admin screen...");
+                LogUtil.LogDebug("Modifying width of admin screen...");
                 Transform aspectFitter = KSP.UI.Screens.Administration.Instance.transform.FindDeepChild("bg and aspectFitter");
                 if (aspectFitter != null)
                 {
@@ -55,7 +55,7 @@ namespace ReStrategia
                 }
 
                 // Clean up the strategy max text
-                LoggingUtil.LogDebug(this, "Cleaning up strategy max text...");
+                LogUtil.LogDebug("Cleaning up strategy max text...");
                 Transform stratCountTransform = KSP.UI.Screens.Administration.Instance.transform.FindDeepChild("ActiveStratCount");
                 TextMeshProUGUI stratCountText = stratCountTransform.GetComponent<TextMeshProUGUI>();
                 // Display as one strategy lower so that if we are at max strategies, we can only allow activation if it would be an upgrade
@@ -66,7 +66,7 @@ namespace ReStrategia
                 }
 
                 // Replace department avatars with images when necessary
-                LoggingUtil.LogDebug(this, "Performing department image replacement...");
+                LogUtil.LogDebug("Performing department image replacement...");
                 Transform scrollListKerbals = KSP.UI.Screens.Administration.Instance.transform.FindDeepChild("scroll list kerbals");
                 foreach (DepartmentConfig department in StrategySystem.Instance.SystemConfig.Departments)
                 {
@@ -95,7 +95,7 @@ namespace ReStrategia
                             KerbalListItem kerbalListItem = t.GetComponent<KerbalListItem>();
                             if (kerbalListItem.title.text.Contains(department.HeadName))
                             {
-                                LoggingUtil.LogDebug(this, "Replacing admin building texture for department {0}", department.HeadName);
+                                LogUtil.LogDebug("Replacing admin building texture for department {0}", department.HeadName);
                                 kerbalListItem.kerbalImage.texture = tex;
                                 kerbalListItem.kerbalImage.material = kerbalListItem.kerbalImage.defaultMaterial;
 

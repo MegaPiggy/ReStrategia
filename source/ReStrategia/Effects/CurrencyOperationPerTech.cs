@@ -65,7 +65,7 @@ namespace ReStrategia
 
                 if (techTreeRoot == null || techTree == null)
                 {
-                    Debug.LogError("[ReStrategia] Couldn't load tech tree from " + HighLogic.CurrentGame.Parameters.Career.TechTreeUrl);
+                    LogUtil.LogError("Couldn't load tech tree from " + HighLogic.CurrentGame.Parameters.Career.TechTreeUrl);
                     return false;
                 }
 

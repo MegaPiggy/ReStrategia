@@ -55,7 +55,7 @@ namespace ReStrategia
 
         void OnKSCStructureCollapsing(DestructibleBuilding building)
         {
-            Debug.Log("[ReStrategia] OnKSCStructureCollapsing: " + building);
+            LogUtil.LogInfo("OnKSCStructureCollapsing: " + building);
 
             if (currency == Currency.Funds)
             {

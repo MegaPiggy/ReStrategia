@@ -56,7 +56,7 @@ namespace ReStrategia
         {
             if (ContractConfigurator.Util.Version.VerifyResearchBodiesVersion())
             {
-                LoggingUtil.LogVerbose(this, "ResearchBodies check for strategy " + Parent.Config.Title);
+                LogUtil.LogDebug("ResearchBodies check for strategy " + Parent.Config.Title);
 
                 // Check each body that the contract references
                 Dictionary<CelestialBody, RBWrapper.CelestialBodyInfo> bodyInfoDict = RBWrapper.RBactualAPI.CelestialBodies;
@@ -65,7 +65,7 @@ namespace ReStrategia
                     if (bodyInfoDict.ContainsKey(body) && !body.isHomeWorld)
                     {
                         RBWrapper.CelestialBodyInfo bodyInfo = bodyInfoDict[body];
-                        LoggingUtil.LogVerbose(this, "    check body {0} = {1}", body, bodyInfo.isResearched);
+                        LogUtil.LogDebug("    check body {0} = {1}", body, bodyInfo.isResearched);
                         if (!bodyInfo.isResearched)
                         {
                             return false;

@@ -89,20 +89,27 @@ namespace ReStrategia
 
             if (assembly == null)
             {
-                LoggingUtil.Log(
-                    silent ? LoggingUtil.LogLevel.VERBOSE : LoggingUtil.LogLevel.ERROR,
-                    typeof(Version),
-                    "Couldn't find assembly for '{0}'!",
-                    name
-                );
+                if (silent)
+                {
+                    LogUtil.LogDebug(
+                        "Couldn't find assembly for '{0}'!",
+                        name
+                    );
+                }
+                else
+                {
+                    LogUtil.LogError(
+                        "Couldn't find assembly for '{0}'!",
+                        name
+                    );
+                }
 
                 return null;
             }
 
             if (assemblies.Count > 1)
             {
-                LoggingUtil.LogWarning(
-                    typeof(Version),
+                LogUtil.LogWarning(
                     StringBuilderCache.Format("Multiple assemblies with name '{0}' found!", name)
                 );
             }
@@ -119,8 +126,7 @@ namespace ReStrategia
 
             if (received >= expected)
             {
-                LoggingUtil.LogVerbose(
-                    typeof(Version),
+                LogUtil.LogDebug(
                     "Version check for '{0}' passed using {1} version. Minimum required is {2}, version found was {3}",
                     name,
                     versionType,
@@ -131,15 +137,26 @@ namespace ReStrategia
                 return assembly.assembly;
             }
 
-            LoggingUtil.Log(
-                silent ? LoggingUtil.LogLevel.DEBUG : LoggingUtil.LogLevel.ERROR,
-                typeof(Version),
-                "Version check for '{0}' failed using {1} version! Minimum required is {2}, version found was {3}",
-                name,
-                versionType,
-                version,
-                receivedStr
-            );
+            if (silent)
+            {
+                LogUtil.LogDebug(
+                    "Version check for '{0}' failed using {1} version! Minimum required is {2}, version found was {3}",
+                    name,
+                    versionType,
+                    version,
+                    receivedStr
+                );
+            }
+            else
+            {
+                LogUtil.LogError(
+                    "Version check for '{0}' failed using {1} version! Minimum required is {2}, version found was {3}",
+                    name,
+                    versionType,
+                    version,
+                    receivedStr
+                );
+            }
 
             return null;
         }
@@ -200,11 +217,11 @@ namespace ReStrategia
                 bool init = SingularityWrapper.Init();
                 if (init)
                 {
-                    LoggingUtil.LogInfo(typeof(Version), "Successfully initialized Singularity wrapper.");
+                    LogUtil.LogInfo("Successfully initialized Singularity wrapper.");
                 }
                 else
                 {
-                    LoggingUtil.LogDebug(typeof(Version), "Couldn't initialize Singularity wrapper.");
+                    LogUtil.LogDebug("Couldn't initialize Singularity wrapper.");
                 }
             }
 
@@ -231,11 +248,11 @@ namespace ReStrategia
                 bool init = KopernicusWrapper.Init();
                 if (init)
                 {
-                    LoggingUtil.LogInfo(typeof(Version), "Successfully initialized Kopernicus wrapper.");
+                    LogUtil.LogInfo("Successfully initialized Kopernicus wrapper.");
                 }
                 else
                 {
-                    LoggingUtil.LogDebug(typeof(Version), "Couldn't initialize Kopernicus wrapper.");
+                    LogUtil.LogDebug("Couldn't initialize Kopernicus wrapper.");
                 }
             }
 
@@ -262,11 +279,11 @@ namespace ReStrategia
                 bool init = KopernicusExpansionWrapper.Init();
                 if (init)
                 {
-                    LoggingUtil.LogInfo(typeof(Version), "Successfully initialized Kopernicus Expansion wrapper.");
+                    LogUtil.LogInfo("Successfully initialized Kopernicus Expansion wrapper.");
                 }
                 else
                 {
-                    LoggingUtil.LogDebug(typeof(Version), "Couldn't initialize Kopernicus Expansion wrapper.");
+                    LogUtil.LogDebug("Couldn't initialize Kopernicus Expansion wrapper.");
                 }
             }
 

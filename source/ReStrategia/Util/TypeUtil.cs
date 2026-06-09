@@ -26,7 +26,7 @@ namespace ReStrategia
                     // Only log once
                     if (!badAssemblies.Contains(assembly))
                     {
-                        Debug.LogException(new Exception("Error loading types from assembly " + assembly.FullName, e));
+                        LogUtil.LogError(new Exception("Error loading types from assembly " + assembly.FullName, e));
                         badAssemblies.Add(assembly);
                     }
                     continue;

@@ -99,7 +99,7 @@ namespace ReStrategia
 
                         if (!met)
                         {
-                            Debug.Log("[ReStrategia] Strategy no longer available due to reason: " + unmetReason);
+                            LogUtil.LogInfo("Strategy no longer available due to reason: " + unmetReason);
                         }
                     }
 
@@ -244,7 +244,7 @@ namespace ReStrategia
 
                 var fixedText = menu.levelStatsText.text.StartsWith("<color") ? nextLevelText : currentLevelText;
 
-                Debug.Log("Changing text from \"" + menu.levelStatsText.text + "\" to \"" + fixedText + "\"");
+                LogUtil.LogInfo("Changing text from \"" + menu.levelStatsText.text + "\" to \"" + fixedText + "\"");
                 menu.levelStatsText.text = fixedText;
 
                 yield return null;

@@ -19,7 +19,7 @@ namespace ReStrategia
 
         public void Awake()
         {
-            Debug.Log("[ReStrategia] Expanding configuration");
+            LogUtil.LogInfo("Expanding configuration");
             DoDependencyCheck();
             DoLoad();
             DontDestroyOnLoad(this);
@@ -56,7 +56,7 @@ namespace ReStrategia
             foreach (UrlDir.UrlConfig config in GameDatabase.Instance.GetConfigs("STRATEGY_BODY_EXPAND"))
             {
                 ConfigNode node = config.config;
-                Debug.Log("[ReStrategia] Expanding " + node.GetValue("id"));
+                LogUtil.LogInfo("Expanding " + node.GetValue("id"));
                 foreach (CelestialBody body in CelestialBodyUtil.GetDistinctBodiesForStrategy(node.GetValue("id")))
                 {
                     try
@@ -80,12 +80,12 @@ namespace ReStrategia
                         }
 
                         // Add the cloned strategy to the config file
-                        Debug.Log("[ReStrategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
+                        LogUtil.LogInfo("Generated strategy '" + newStrategy.GetValue("title") + "'");
                         config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError("[ReStrategia] Failed to generate strategy for body '" + body.name + "'\n" + e);
+                        LogUtil.LogError("Failed to generate strategy for body '" + body.name + "'\n" + e);
                     }
 
                     yield return null;
@@ -96,7 +96,7 @@ namespace ReStrategia
             foreach (UrlDir.UrlConfig config in GameDatabase.Instance.GetConfigs("STRATEGY_LEVEL_EXPAND"))
             {
                 ConfigNode node = config.config;
-                Debug.Log("[ReStrategia] Expanding " + node.GetValue("name"));
+                LogUtil.LogInfo("Expanding " + node.GetValue("name"));
 
                 int count = ConfigNodeUtil.ParseValue<int>(node, "factorSliderSteps");
                 for (int level = 1; level <= count; level++)
@@ -141,12 +141,12 @@ namespace ReStrategia
                         }
 
                         // Add the cloned strategy to the config file
-                        Debug.Log("[ReStrategia] Generated strategy '" + newStrategy.GetValue("title") + "'");
+                        LogUtil.LogInfo("Generated strategy '" + newStrategy.GetValue("title") + "'");
                         config.parent.configs.Add(new UrlDir.UrlConfig(config.parent, newStrategy));
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError("[ReStrategia] Failed to generate strategy for level " + level + "\n" + e);
+                        LogUtil.LogError("Failed to generate strategy for level " + level + "\n" + e);
                     }
 
                     yield return null;
