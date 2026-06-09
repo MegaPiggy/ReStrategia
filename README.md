@@ -1,145 +1,91 @@
-# ReStrategia changelog
-**ReStrategia 2.0.0**
-- Added new Kerbin Programs.
-- Support for arbitrary homeworlds.
-- Changed some requirements to allow probe missions first before a crewed mission to a Gas Giant system.
-- Changed the way the programs are created
-  - Revamped body classification (stars, barycenters, etc.)
-  - Interstellar systems are no longer marked as Gas Giant programs and instead their planets are interpreted the same as Kerbol's planets.
-  - Barycenters now have special handling.
-  - Added recursion to detect moons of moons.
-  - Hidden bodies are now ignored
-- Added more custom program names (Caelus, Poseidon, Mercury, Muna, Stayputnik, etc)
-- Greatly increased limits of planetary programs (meaning strategies won't break when you have a ton of mods).
-- Upgraded Roman numeral converter (now goes past 25).
-- Various other small bug fixes and code clean-ups.
+# ReStrategia
 
-# StrategiaContinued changelog
-**StrategiaContinued 1.10.1**
-- Fixed MaxActiveStrategies not being used everywhere.
-- Updated to .NET Framework 4.7.2
+ReStrategia is a Kerbal Space Program (KSP) mod that extends and continues the original [Strategia](https://github.com/jrossignol/Strategia) mod.
 
-# Original changelog
-**Strategia 1.10.0**
-- Support replacing headImage (static images) for admin department.
-- Better dynamic resizing based on count of departments.
-- Removed some old Reflection that is no longer needed.
-- Fixed an NRE when no avatar is specified in a department config.
+## Description
 
-**Strategia 1.9.0**
-- Rebuild for KSP 1.10.0
-- Fix from TonkaCrash for issue where strategies for improving vessel values applied the improved value to different parts of the same type.
-- Fixed a minor issue where the Strategy notifier could report incorrect information.
+ReStrategia is a revamp to Kerbal Space Program's strategy system. All the stock strategies are removed, and replaced with new and unique strategies.
 
-**Strategia 1.8.0**
-- Rebuild for KSP 1.8.0
-- Minor typo correction (thanks Galenmacil).
+## Special Mission Strategies
 
-**Strategia 1.7.4**
-- Check hasSolidSurface flag for gas giants (thanks LucasHazelwood).
-- Added title to Strategia agent to prevent warnings in log (thanks denyasis).
+The first set of strategies are special mission strategies. These strategies will give you advance cash and bonuses to certain milestones for completing a high level objective as part of your space program. They are dynamic, so they will work with mods that change the stock solar system by adding or changing celestial bodies.  Be warned though - if you cancel one of these strategies without completing the objective, you will face a heavy penalty!
 
-**Strategia 1.7.3**
-- Rebuild for KSP 1.5.x.
-- Fixed active strategy text in facility right-click menu (thanks avalancha).
+### Crewed Missions
 
-**Strategia 1.7.2**
-- Fixed logic for determining strategy level - this was causing some strategies to be the same for all levels (thanks ibanix).
-- Fixed Astronaut Training Strategies not actually costing extra (thanks Jukelo).
+Once we've proven we can get a Kerbal to orbit and back, we need to continue to break new barriers.  We have a choice of nearby bodies that we can get to.  We choose to go to <insert celestial body here>, not because it is easy, but because it is hard.
 
-**Strategia 1.7.1**
-- Fixed some issues with the kerbal portraits not refreshing properly when the level is dynamically changed (thanks zwinst).
-- Fixed error handling when tech tree can't be loaded (thanks zwinst).
-- Fixed the astronaut training strategy that was broken in 1.7.0 (thanks MistaJunior).
-- Fixed ugly number format in some places.
+### Uncrewed Missions
 
-**Strategia 1.7.0**
-- Rebuild for KSP 1.4.1.
-- Fixed issue where the level boosting strategies could boost a level too high and break things (thanks Mihara).
-- Removed stock references to slider values in messages for strategies that weren't available due to insufficient Admin Building level.
+The costs of sending a Kerbal to another planet are astronomical compared to those of sending a probe that we can leave behind.  Why don't we send some probes to our neighbouring planets to gather science autonomously for us?
 
-**Strategia 1.6.0**
-- Rebuild for KSP 1.3.0.
-- Celestial body programs now increase the likelihood of receiving contracts related to the celestial body in question.
-- Fixed issue where removal of contract decline penalty on contract slot machine was permanent.
+## Standard Strategies
 
-**Strategia 1.5.0**
-- Massive Scale Launches strategy now incrementally gives the bonuses (you can still get the level 1 bonus if you don't meet the threshold for level 3).
-- Show the correct max number of strategies on the description text of the Administration building.
-- Minor Operations department balance (thanks Stratickus).
-- Reduce Kerbal recovery reputation by a factor of 10 (thanks BureauJaeger).
-- Fix issue with Stagnated Research not being selectable (thanks Stratickus).
-- Adjust order of Gene/Wernher in the admin building.
-- Use correct currency symbols.
+The remaining strategies are the standard strategies - these give a bonus while active, and can be active for as long as you like.
 
-**Strategia 1.4.0**
-- Rebuild for KSP 1.2.x.
+### Astronaut Training Program
 
-**Strategia 1.3.0**
-- Added basic support for ResearchBodies (strategies for unresearched bodies are unavailable).
-- Combine popups triggered with the same text/purpose.
-- Made contracts work better with Contract Configurator 1.15.x.
-- Added loading tip.
-- Fixed To Boldly Go not awarding bonuses when the science reward slider isn't set to 100% (thanks Smu).
-- Fixed minor issues with currency popups.
+Our standard training procedure is to treat newly hired astronauts as a disposable commodity to greatly reduce the cost of unscheduled disassemblies. Still, some argue that training our astronauts before putting them on top of a top of a ton of explosives will result in a lower mission failure rate. The cost of setting up the program will be high, nevermind the cost of actually training the astronauts. What do you say, do we want the right stuff, or the almost-good-enough stuff?
 
-**Strategia 1.2.4**
-- No longer lose reputation bonuses when upgrading/downgrading within the Free Ice Cream I/II/III strategies (thanks ibanix).
-- Bonuses/maluses are preserved when upgrading or downgrading Free Ice Cream.
-- Don't change active contracts when activating Free Ice Cream for the first time (thanks ZachPruckowski).
-- Increased Moho rewards for various strategies (thanks ibanix).
-- Fixed mission requirement in moon probe strategies (thanks ibanix).
+### Massive Scale Launches
 
-**Strategia 1.2.3**
-- Corrected minimum Contract Configurator version checking.
-- Fixed moon probe strategies to not be mutually exclusive (thanks westamastaflash).
-- CurrencyOperationByContract now looks at child groups as well.
-- Fixed broken Custom Barn Kit check.
-- Allow splashed or landed for probe contracts (thanks Norcalplanner).
-- Moon probe strategies stop being offered once the moon in quest is orbited, not just reached.
+We've found some investors who are willing to sponsor us if we're able to launch colossal structures into space in a single launch. We'll have to employ some truly Whackjobian construction techniques to get these things into orbit.
 
-**Strategia 1.2.2**
-- Output the adjusted number of max strategies allowed in the admin building so that people stop posting about it in the thread (thanks literally everyone).
-- Fixed exceptions when researching a tech (thanks smjjames).
-- Change currency popups symbols to work around font issue.
-- Fixed exception loading Massive Scale Launches (thanks KocLobster).
-- Workaround for KSP 1.1 bug where vertical scrollbars don't work in Admin UI.
-- Fixed some issues with cancelling contract-based strategies.
-- Allow a Kerbal returning being landed on a moon to trigger the planetary strategies to handle cases where the ship doesn't make it home (thanks dlrk).
-- Fixed Pilot Focus III ISP adjustments with multi-mode engines (thanks lude).
+### Contract Slot Machine
 
-**Strategia 1.2.1**
-- Fixed Pilot/Engineer/Scientist Focus strategies not actually giving the stated contract bonuses (thanks DeathProphet).
-- Fixed compatibility with Sigma Binary (thanks sentania).
-- Fixed hint text for crewed/uncrewed missions (thanks severedsolo).
-- Fixed planetary probe strategies so they can't be re-done (thanks ibanix).
-- Fixed reputation/funds being lost on scene change - normally after the quicksave but breaks KRASH (thanks garwel and linuxgurugamer).
+These agencies seem to think they're doing us a favour offering by us these ridiculous contracts. Why should we be penalized for being choosy? By closing our books to the public, agencies will have no idea what we're willing to accept. There might be a little chaos in the contracts we see under this model, but if we're only choosing the best ones, then who cares?!?
 
-**Strategia 1.2.0**
-- Support for KSP 1.1
-- Fixed additional issue with incorrect ISP assignment in Pilot Focus III (thanks TorgHacker).
-- Increased the cache size for the contract slot machine strategy.
+### To Boldly Go
 
-**Strategia 1.1.1**
-- Fixed issue with reputation being awarded when it's not supposed to (thanks Wercho).
-- Make crewed mission requirement a little bit clearer (thanks Zoidos).
-- Make moon uncrewed missions only require an orbit of the homeworld (thanks a_shack).
-- Fixed issue with FlyBy mission caused by Contract Configurator 1.9.8 (thanks smjjames).
+If we want to get the most research possible done out there, we need to explore as many new biomes as we can. Government grants from exploration programs will ultimately help us fund further exploration and research.
 
-**Strategia 1.1.0**
-- Mun/Minmus Program can each be completed in turn.
-- Created a logo for the contract agent.
-- Changed Media Circus I bonus to prevent infinite reputation exploit.
-- Added support for Sigma Binary.
-- Fixed impactor contracts for some configurations (thanks smjjames).
-- Fixed bug that allowed more than the max number of strategies to be active if the last one was a mission strategy (thanks Death Engineering).
-- Fixed issue where Massive Scale Launch bonuses would apply when going from landed => orbit on *any* body (thanks smjjames).
-- Fixed Astronaut Training exception when hiring two crew members in quick succession (thanks smjjames).
-- Fixed strategies that change vessel values (like Pilot Focus III) to check for more events - like crew transfers (thanks smjjames).
-- Force set ISP when changing it in Pilot Focus III (thanks smjjames).
-- Fixed possible issue with multipliers when switching between Pilot/Engineer focuses.
-- Fixed issue where Contract Slot Machine values kep getting re-rolled (thanks smjjames).
-- Fixed issue where Free Ice Cream time-counter would reset each time a save is loaded.
+### Probe Frenzy
 
-Strategia 1.0.0
-- Initial release.
+If we want to do some research, then probes are the way to go. What we save on sending Kerbals out there can be spent on a vast fleet of autonomous probes.
+
+### Local Science
+
+There are so many research opportunities right in our back yard. We should focus on local research to bootstrap our space program. That way when we do make it further out there, we'll be sending the best technology we can.
+
+### Stagnated Research
+
+There are several conservative groups on Kerbin that think we've gone too far, too fast. We're not about to shut down the space program, but maybe slowing down our development of new technology to appease these groups will get us some goodwill and ensure that they don't burn down KSC?
+
+### Free Ice Cream
+
+We've come up with a crazy idea - giving out free ice cream at the space center. The public will absolutely love us. If we push the program far enough, we'll get better rewards for rescuing Kerbals (they'll get ice cream when they land!) and maybe even be able to get a discount on hiring new astronauts. FREE. ICE. CREAM.
+
+### Media Circus
+
+To make a reputable space program, we need to ramp up the media involvement. Cameras everywhere, coverage 6 hours a day, 426 days a years. Of course, this could easily backfire if we have any... accidents.
+
+### Pilot Focus
+
+Clearly the most important role among our astronauts is that of the pilot. Without a skilled pilot, nobody is going to space today (or any other day). Shall we build our space program around our brave pilots?
+
+### Engineer Focus
+
+Where would we be without our engineers? They make sure everything is in order to get the other astronauts up and down safely. Shall we build our space program around the skilled engineer?
+
+### Scientist Focus
+
+The scientist is the key role that we need to focus on. A skilled scientist knows exactly which sample to send back to maximize our science gain (we can only fit so many Mun rocks in those capsules). Shall we build our space program around our brilliant scientists?
+
+## Download
+
+- CKAN: In [CKAN](https://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan-the-comprehensive-kerbal-archive-network-v1251-broglio/), select and download the mod.
+- GitHub: Download the latest release from the [repository releases](https://github.com/MegaPiggy/ReStrategia/releases/latest) and copy the `GameData/ReStrategia` folder into your KSP `GameData` directory. Please ensure you have all the dependencies before making an issue on GitHub:
+  - ModuleManager is a required dependency and can be downloaded from its [release thread](https://forum.kerbalspaceprogram.com/index.php?/topic/50533-141-module-manager-306-marsh-14th-2018-its-dangerous-to-go-alone-take-those-cats-with-you/).
+  - Contract Configurator is a required dependency and can be downloaded from its [release thread](https://forum.kerbalspaceprogram.com/index.php?/topic/91625-142-contract-configurator-v1250-2018-04-15/).
+  - Custom Barn Kit is a required dependency and can be downloaded from its [release thread](https://forum.kerbalspaceprogram.com/index.php?/topic/109027-14-custom-barn-kit-1117-march-10th-parachute-included/).
+
+## Compatibility
+
+- Komplexity
+- Kopernicus
+- Kopernicus Expansion
+- Singularity
+
+## Credits
+
+- Author / Maintainer: `MegaPiggy`
+- Original Author: `nightingale`
