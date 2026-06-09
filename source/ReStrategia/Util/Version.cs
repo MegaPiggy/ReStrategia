@@ -23,6 +23,8 @@ namespace ReStrategia
         public static bool KopernicusExpansionCheckDone = false;
         public static Assembly KopernicusExpansionAssembly;
 
+        private static readonly HashSet<string> MissingAssembliesLogged = new();
+
         public static Assembly GetAssembly(string assemblyName)
         {
             return AssemblyLoader.loadedAssemblies.SingleOrDefault(a => a.assembly.GetName().Name == assemblyName).assembly;
@@ -89,19 +91,22 @@ namespace ReStrategia
 
             if (assembly == null)
             {
-                if (silent)
+                if (MissingAssembliesLogged.Add(name))
                 {
-                    LogUtil.LogDebug(
-                        "Couldn't find assembly for '{0}'!",
-                        name
-                    );
-                }
-                else
-                {
-                    LogUtil.LogError(
-                        "Couldn't find assembly for '{0}'!",
-                        name
-                    );
+                    if (silent)
+                    {
+                        LogUtil.LogDebug(
+                            "Couldn't find assembly for '{0}'!",
+                            name
+                        );
+                    }
+                    else
+                    {
+                        LogUtil.LogError(
+                            "Couldn't find assembly for '{0}'!",
+                            name
+                        );
+                    }
                 }
 
                 return null;
@@ -206,7 +211,7 @@ namespace ReStrategia
             string minVersion = "0.991";
             if (SingularityAssembly == null || !SingularityCheckDone)
             {
-                SingularityAssembly = Version.VerifyAssemblyVersion("Singularity", minVersion);
+                SingularityAssembly = Version.VerifyAssemblyVersion("Singularity", minVersion, true);
                 SingularityCheckDone = true;
             }
 
@@ -237,7 +242,7 @@ namespace ReStrategia
             string minVersion = "1.12.227";
             if (KopernicusAssembly == null || !KopernicusCheckDone)
             {
-                KopernicusAssembly = Version.VerifyAssemblyFileVersion("Kopernicus", minVersion);
+                KopernicusAssembly = Version.VerifyAssemblyFileVersion("Kopernicus", minVersion, true);
                 KopernicusCheckDone = true;
             }
 

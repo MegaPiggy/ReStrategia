@@ -438,11 +438,11 @@ namespace ReStrategia
 
             var bag = new HashSet<CelestialBody>();
 
-            if (id == "KerbinProgram")
+            if (id.StartsWith("KerbinProgram"))
             {
                 bag.Add(home);
             }
-            else if (id == "MoonProgram")
+            else if (id.StartsWith("MoonProgram"))
             {
                 // Moons of home
                 foreach (CelestialBody child in home.orbitingBodies)
@@ -455,7 +455,7 @@ namespace ReStrategia
                         bag.Add(child);
                 }
             }
-            else if(id == "PlanetaryProgram")
+            else if (id.StartsWith("PlanetaryProgram"))
             {
                 // all terrestrial planets (standalones + barycenters w/ terrestrial primary)
                 foreach (var root in roots)
@@ -467,7 +467,7 @@ namespace ReStrategia
                     }
                 }
             }
-            else if (id == "GasGiantProgram")
+            else if (id.StartsWith("GasGiantProgram"))
             {
                 // all gas giants with many solid moons (+ barycenters w/ gas giant primary)
                 foreach (var root in roots)
@@ -482,7 +482,7 @@ namespace ReStrategia
                     }
                 }
             }
-            else if (id == "ImpactorProbes")
+            else if (id.StartsWith("ImpactorProbes"))
             {
                 // all solid bodies (planets, moons, barycenter components, etc.)
                 foreach (var root in roots)
@@ -495,7 +495,7 @@ namespace ReStrategia
                     }
                 }
             }
-            else if (id == "FlyByProbes")
+            else if (id.StartsWith("FlyByProbes"))
             {
                 // All planets (terrestrial & gas giants) orbiting any system root, excluding home
                 foreach (var root in roots)
@@ -513,11 +513,13 @@ namespace ReStrategia
                     bag.Add(body);
             }
 
-            if (!loggedIDs.ContainsKey(id))
+            string logId = id.TrimEnd("0123456789".ToCharArray());
+
+            if (!loggedIDs.ContainsKey(logId))
             {
-                loggedIDs.Add(id, true);
+                loggedIDs.Add(logId, true);
                 LogUtil.LogDebug(
-                    "Logging ID: " + id + " [" + string.Join(", ", bag.Select(b => $"\"{b.name}\"")) + "]"
+                    "Logging ID: " + logId + " [" + string.Join(", ", bag.Select(b => $"\"{b.name}\"")) + "]"
                 );
             }
 
