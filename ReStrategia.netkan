@@ -6,7 +6,7 @@
     "abstract": "An updated complete rewrite of KSP's strategy system.",
     "license": "MIT",
     "release_status": "stable",
-    "author": "nightingale, MegaPiggy",
+    "author": [ "nightingale", "MegaPiggy" ],
     "$vref": "#/ckan/ksp-avc",
     "depends": [
         { "name": "CustomBarnKit" },
@@ -21,8 +21,11 @@
     ],
     "resources": {
         "homepage": "https://github.com/MegaPiggy/ReStrategia",
+        "spacedock": "https://spacedock.info/mod/4316/ReStrategia",
+        "repository": "https://github.com/MegaPiggy/ReStrategia"
         "bugtracker": "https://github.com/MegaPiggy/ReStrategia/issues",
-        "license": "https://raw.githubusercontent.com/MegaPiggy/ReStrategia/main/LICENSE.txt"
+        "license": "https://raw.githubusercontent.com/MegaPiggy/ReStrategia/main/LICENSE.txt",
+        "manual": "https://github.com/jrossignol/Strategia/wiki"
     },
     "supports": [
         { "name": "Komplexity" },
