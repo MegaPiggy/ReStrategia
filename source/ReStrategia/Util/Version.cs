@@ -28,6 +28,7 @@ namespace ReStrategia
             return AssemblyLoader.loadedAssemblies.SingleOrDefault(a => a.assembly.GetName().Name == assemblyName).assembly;
         }
 
+
         /// <summary>
         /// Verify the loaded assembly meets a minimum version number.
         /// </summary>
@@ -37,54 +38,135 @@ namespace ReStrategia
         /// <returns>The assembly if the version check was successful.  If not, logs and error and returns null.</returns>
         public static Assembly VerifyAssemblyVersion(string name, string version, bool silent = false)
         {
+            return VerifyAssemblyVersion(
+                name,
+                version,
+                GetInformationalVersion,
+                "informational",
+                silent
+            );
+        }
+
+        /// <summary>
+        /// Verify the loaded assembly meets a minimum version number.
+        /// </summary>
+        /// <param name="name">Assembly name</param>
+        /// <param name="version">Minium version</param>
+        /// <param name="silent">Silent mode</param>
+        /// <returns>The assembly if the version check was successful.  If not, logs and error and returns null.</returns>
+        public static Assembly VerifyAssemblyFileVersion(string name, string version, bool silent = false)
+        {
+            return VerifyAssemblyVersion(
+                name,
+                version,
+                GetFileVersion,
+                "file",
+                silent
+            );
+        }
+
+        /// <summary>
+        /// Verify the loaded assembly meets a minimum version number.
+        /// </summary>
+        /// <param name="name">Assembly name</param>
+        /// <param name="version">Minium version</param>
+        /// <param name="silent">Silent mode</param>
+        /// <returns>The assembly if the version check was successful.  If not, logs and error and returns null.</returns>
+        private static Assembly VerifyAssemblyVersion(
+            string name,
+            string version,
+            Func<Assembly, string> versionGetter,
+            string versionType,
+            bool silent
+        )
+        {
             // Logic courtesy of DMagic
-            var assemblies = AssemblyLoader.loadedAssemblies.Where(a => a.assembly.GetName().Name == name);
+            var assemblies = AssemblyLoader.loadedAssemblies
+                .Where(a => a.assembly.GetName().Name == name)
+                .ToList();
+
             var assembly = assemblies.FirstOrDefault();
-            if (assembly != null)
+
+            if (assembly == null)
             {
-                if (assemblies.Count() > 1)
-                {
-                    LoggingUtil.LogWarning(typeof(Version), StringBuilderCache.Format("Multiple assemblies with name '{0}' found!", name));
-                }
+                LoggingUtil.Log(
+                    silent ? LoggingUtil.LogLevel.VERBOSE : LoggingUtil.LogLevel.ERROR,
+                    typeof(Version),
+                    "Couldn't find assembly for '{0}'!",
+                    name
+                );
 
-                string receivedStr;
-
-                // First try the informational version
-                var ainfoV = Attribute.GetCustomAttribute(assembly.assembly, typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
-                if (ainfoV != null)
-                {
-                    receivedStr = ainfoV.InformationalVersion;
-                }
-                // If that fails, use the product version
-                else
-                {
-                    receivedStr = FileVersionInfo.GetVersionInfo(assembly.assembly.Location).ProductVersion;
-                }
-                // If that still fails, fall back on AssemblyVersion
-                if (string.IsNullOrEmpty(receivedStr) || receivedStr == " ")
-                {
-                    receivedStr = assembly.assembly.GetName().Version.ToString();
-                }
-
-                System.Version expected = ParseVersion(version);
-                System.Version received = ParseVersion(receivedStr);
-
-                if (received >= expected)
-                {
-                    LoggingUtil.LogVerbose(typeof(Version), "Version check for '{0}' passed.  Minimum required is {1}, version found was {2}", name, version, receivedStr);
-                    return assembly.assembly;
-                }
-                else
-                {
-                    LoggingUtil.Log(silent ? LoggingUtil.LogLevel.DEBUG : LoggingUtil.LogLevel.ERROR, typeof(Version), "Version check for '{0}' failed!  Minimum required is {1}, version found was {2}", name, version, receivedStr);
-                    return null;
-                }
-            }
-            else
-            {
-                LoggingUtil.Log(silent ? LoggingUtil.LogLevel.VERBOSE : LoggingUtil.LogLevel.ERROR, typeof(Version), "Couldn't find assembly for '{0}'!", name);
                 return null;
             }
+
+            if (assemblies.Count > 1)
+            {
+                LoggingUtil.LogWarning(
+                    typeof(Version),
+                    StringBuilderCache.Format("Multiple assemblies with name '{0}' found!", name)
+                );
+            }
+
+            string receivedStr = versionGetter(assembly.assembly);
+
+            if (string.IsNullOrEmpty(receivedStr) || receivedStr == " ")
+            {
+                receivedStr = assembly.assembly.GetName().Version.ToString();
+            }
+
+            System.Version expected = ParseVersion(version);
+            System.Version received = ParseVersion(receivedStr);
+
+            if (received >= expected)
+            {
+                LoggingUtil.LogVerbose(
+                    typeof(Version),
+                    "Version check for '{0}' passed using {1} version. Minimum required is {2}, version found was {3}",
+                    name,
+                    versionType,
+                    version,
+                    receivedStr
+                );
+
+                return assembly.assembly;
+            }
+
+            LoggingUtil.Log(
+                silent ? LoggingUtil.LogLevel.DEBUG : LoggingUtil.LogLevel.ERROR,
+                typeof(Version),
+                "Version check for '{0}' failed using {1} version! Minimum required is {2}, version found was {3}",
+                name,
+                versionType,
+                version,
+                receivedStr
+            );
+
+            return null;
+        }
+
+        private static string GetInformationalVersion(Assembly assembly)
+        {
+            var infoVersion = Attribute.GetCustomAttribute(
+                assembly,
+                typeof(AssemblyInformationalVersionAttribute)
+            ) as AssemblyInformationalVersionAttribute;
+
+            return infoVersion?.InformationalVersion;
+        }
+
+        private static string GetFileVersion(Assembly assembly)
+        {
+            var fileVersion = Attribute.GetCustomAttribute(
+                assembly,
+                typeof(AssemblyFileVersionAttribute)
+            ) as AssemblyFileVersionAttribute;
+
+            if (!string.IsNullOrEmpty(fileVersion?.Version))
+            {
+                return fileVersion.Version;
+            }
+
+            return FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
         }
 
         public static System.Version ParseVersion(string version)
@@ -138,7 +220,7 @@ namespace ReStrategia
             string minVersion = "1.12.227";
             if (KopernicusAssembly == null || !KopernicusCheckDone)
             {
-                KopernicusAssembly = Version.VerifyAssemblyVersion("Kopernicus", minVersion);
+                KopernicusAssembly = Version.VerifyAssemblyFileVersion("Kopernicus", minVersion);
                 KopernicusCheckDone = true;
             }
 
