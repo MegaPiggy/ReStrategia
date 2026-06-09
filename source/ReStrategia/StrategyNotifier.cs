@@ -244,7 +244,7 @@ namespace ReStrategia
 
                 var fixedText = menu.levelStatsText.text.StartsWith("<color") ? nextLevelText : currentLevelText;
 
-                LogUtil.LogInfo("Changing text from \"" + menu.levelStatsText.text + "\" to \"" + fixedText + "\"");
+                //LogUtil.LogInfo("Changing text from \"" + menu.levelStatsText.text + "\" to \"" + fixedText + "\"");
                 menu.levelStatsText.text = fixedText;
 
                 yield return null;
