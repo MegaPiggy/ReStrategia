@@ -22,7 +22,7 @@
     "resources": {
         "homepage": "https://github.com/MegaPiggy/ReStrategia",
         "spacedock": "https://spacedock.info/mod/4316/ReStrategia",
-        "repository": "https://github.com/MegaPiggy/ReStrategia"
+        "repository": "https://github.com/MegaPiggy/ReStrategia",
         "bugtracker": "https://github.com/MegaPiggy/ReStrategia/issues",
         "license": "https://raw.githubusercontent.com/MegaPiggy/ReStrategia/main/LICENSE.txt",
         "manual": "https://github.com/jrossignol/Strategia/wiki"
