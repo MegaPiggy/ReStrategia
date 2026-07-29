@@ -221,17 +221,19 @@ namespace ReStrategia
 
         IEnumerator<YieldInstruction> FixStrategyText(KSCFacilityContextMenu menu)
         {
-            int currentLevel = (int)Math.Round(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.Administration) *
-                ScenarioUpgradeableFacilities.GetFacilityLevelCount(SpaceCenterFacility.Administration)) + 1;
+            float currentLevel = ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.Administration);
+            float nextLevel = Mathf.Min(1f, currentLevel + 1f / ScenarioUpgradeableFacilities.GetFacilityLevelCount(SpaceCenterFacility.Administration));
+            int maxActiveStrategies = GameVariables.Instance.GetActiveStrategyLimit(currentLevel);
+            int nextMaxActiveStrategies = GameVariables.Instance.GetActiveStrategyLimit(nextLevel);
 
-            // Display as one strategy lower (matching the level coincidentally) so that if we are at max strategies, we can only allow activation if it would be an upgrade
-            string currentLevelText = StringBuilderCache.Format("* Max Active Strategies: {0}", currentLevel);
+            // Display as one strategy lower (matching the level correctly) so that if we are at max strategies, we can only allow activation if it would be an upgrade
+            string currentLevelText = StringBuilderCache.Format("* Max Active Strategies: {0}", maxActiveStrategies - 1);
             string nextLevelText = string.Concat(new string[]
                 {
                     "<color=",
                     XKCDColors.HexFormat.ElectricLime,
                     ">",
-                    StringBuilderCache.Format("* Max Active Strategies: {0}", currentLevel+1),
+                    StringBuilderCache.Format("* Max Active Strategies: {0}", nextMaxActiveStrategies - 1),
                     "</color>"
                 });
 
