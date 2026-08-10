@@ -23,7 +23,49 @@ namespace ReStrategia
             WORMHOLE
         }
 
+        // BodyType and GetBodiesForStrategy are queried constantly (every
+        // RequirementMet() from StrategyNotifier's polling loop, contract
+        // effects, etc.) but are expensive to compute: recursive tree walks
+        // with several GetComponent calls per body per predicate. On large
+        // Kopernicus systems this costs hundreds of ms per evaluation and
+        // causes constant frame stutters (#4). The results only depend on the
+        // planetary system, so they are memoized here; the cache resets if
+        // the body list changes.
+        private static readonly Dictionary<CelestialBody, CelestialBodyType> bodyTypeCache = new Dictionary<CelestialBody, CelestialBodyType>();
+        private static readonly Dictionary<string, List<CelestialBody>> strategyBodyCache = new Dictionary<string, List<CelestialBody>>();
+        private static int cachedBodyCount = -1;
+
+        private static void ValidateCaches()
+        {
+            int count = FlightGlobals.Bodies == null ? -1 : FlightGlobals.Bodies.Count;
+            if (count != cachedBodyCount)
+            {
+                bodyTypeCache.Clear();
+                strategyBodyCache.Clear();
+                cachedBodyCount = count;
+            }
+        }
+
         public static CelestialBodyType BodyType(CelestialBody cb)
+        {
+            if (cb == null)
+            {
+                return CelestialBodyType.NOT_APPLICABLE;
+            }
+
+            ValidateCaches();
+            CelestialBodyType cached;
+            if (bodyTypeCache.TryGetValue(cb, out cached))
+            {
+                return cached;
+            }
+
+            CelestialBodyType result = BodyTypeUncached(cb);
+            bodyTypeCache[cb] = result;
+            return result;
+        }
+
+        private static CelestialBodyType BodyTypeUncached(CelestialBody cb)
         {
             if (cb == null || IsHidden(cb))
             {
@@ -418,10 +460,23 @@ namespace ReStrategia
 
         public static IEnumerable<CelestialBody> GetDistinctBodiesForStrategy(string id)
         {
-            return GetBodiesForStrategy(id).Distinct();
+            // GetBodiesForStrategy yields from a HashSet, so it is already distinct.
+            return GetBodiesForStrategy(id);
         }
 
         public static IEnumerable<CelestialBody> GetBodiesForStrategy(string id)
+        {
+            ValidateCaches();
+            List<CelestialBody> cached;
+            if (!strategyBodyCache.TryGetValue(id, out cached))
+            {
+                cached = BodiesForStrategyUncached(id).ToList();
+                strategyBodyCache[id] = cached;
+            }
+            return cached;
+        }
+
+        private static IEnumerable<CelestialBody> BodiesForStrategyUncached(string id)
         {
             CelestialBody sun = FlightGlobals.Bodies[0];
             CelestialBody home = FlightGlobals.Bodies.Single(cb => cb.isHomeWorld);
